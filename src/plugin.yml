@@ -1,0 +1,38 @@
+website: http://marcely.de
+version: "1.4"
+name: BedwarsHub
+author: Marcely1199
+main: de.marcely.bwbc.BedwarsHub
+description: Bedwars is a minigame
+commands:
+  bw:
+    description: Bedwars is a minigame
+    usage: /bw
+  bedwars:
+    description: The same as /bw
+    usage: /bedwars
+  mbedwars:
+    description: The same as /bw
+    usage: /mbedwars
+  bwbc:
+    description: The same as /bw
+    usage: /mbedwars
+permissions:
+  bw_*:
+    default: op
+    children:
+    - bw_summon
+    - bw_list
+    - bw_info
+    - bw_join
+    - bw_beta
+  bw_summon:
+    default: op
+  bw_list:
+    default: op
+  bw_info:
+    default: op
+  bw_join:
+    default: op
+  bw_beta:
+    default: op
