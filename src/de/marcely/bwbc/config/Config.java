@@ -52,16 +52,13 @@ public class Config {
         cm.save();
     }
 
-    private static String replaceStringChatColor(String str) {
-        for (final ChatColor color : ChatColor.values()) {
-            str = str.replace("&" + color.getChar(), (CharSequence) color);
-        }
-        return str;
+    private static String replaceStringChatColor(final String str) {
+        return ChatColor.translateAlternateColorCodes('&', str);
     }
 
     private static String replaceChatColorString(String str) {
         for (final ChatColor color : ChatColor.values()) {
-            str = str.replace((CharSequence) color, "&" + color.getChar());
+            str = str.replace(String.valueOf(color.getChar()), "&" + color.getChar());
         }
         return str;
     }

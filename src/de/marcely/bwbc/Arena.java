@@ -165,6 +165,15 @@ public class Arena {
         public int getID() {
             return selected_id;
         }
+        
+        public static ArenaStatus fromInt(final String type) {
+            final int value = Integer.parseInt(type);
+            for (final ArenaStatus id : ArenaStatus.values()) {
+                if (value == id.selected_id)
+                    return id;
+            }
+            return null;
+        }
     }
 
 }

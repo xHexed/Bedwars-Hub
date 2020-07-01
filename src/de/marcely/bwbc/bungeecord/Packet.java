@@ -29,7 +29,15 @@ public abstract class Packet {
         public int getID() {
             return selected_id;
         }
-    }
 
+        public static PacketType fromInt(final String type) {
+            final int value = Integer.parseInt(type);
+            for (final PacketType id : PacketType.values()) {
+                if (value == id.selected_id)
+                    return id;
+            }
+            return null;
+        }
+    }
 }
 

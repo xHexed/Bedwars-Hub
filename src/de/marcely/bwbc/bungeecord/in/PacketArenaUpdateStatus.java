@@ -40,7 +40,7 @@ extends Packet {
         if (strs.length == 3) {
             final Arena arena = Util.getArena(KEYSLASH.matcher(strs[1]).replaceAll(Matcher.quoteReplacement("/")));
             if (arena != null && Util.isInteger(strs[2])) {
-                final Arena.ArenaStatus status = Arena.ArenaStatus.valueOf(strs[2]);
+                final Arena.ArenaStatus status = Arena.ArenaStatus.fromInt(strs[2]);
                 return new PacketArenaUpdateStatus(arena, status);
             }
             return null;

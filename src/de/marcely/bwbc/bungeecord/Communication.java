@@ -22,7 +22,7 @@ public class Communication {
             if (Util.isInteger(strs[0])) {
                 final PacketChannelExists packet;
                 final PacketArenaUpdateTeamPlayers packet2;
-                final Packet.PacketType type = Packet.PacketType.valueOf(strs[0]);
+                final Packet.PacketType type = Packet.PacketType.fromInt(strs[0]);
                 if (type == Packet.PacketType.IN_PacketChannelExists && (packet = PacketChannelExists.build(msg)) != null) {
                     Channel channel;
                     if (Util.getChannel(packet.getChannelName()) != null) {

@@ -42,7 +42,7 @@ extends Packet {
             try {
                 final String[] strs2 = strs[5].split(":");
                 final int i = Integer.parseInt(strs2[1]);
-                final Arena arena = new Arena(channel, KEYSLASH.matcher(strs[1]).replaceAll(Matcher.quoteReplacement("/")), KEYSLASH.matcher(strs[6]).replaceAll(Matcher.quoteReplacement("/")), Integer.parseInt(strs[3]), Integer.parseInt(strs[4]), new ItemStack(Material.getMaterial(strs2[0]), 1, (short)i), Arena.ArenaStatus.valueOf(strs[2]), Integer.parseInt(strs[7]), Integer.parseInt(strs[8]));
+                final Arena arena = new Arena(channel, KEYSLASH.matcher(strs[1]).replaceAll(Matcher.quoteReplacement("/")), KEYSLASH.matcher(strs[6]).replaceAll(Matcher.quoteReplacement("/")), Integer.parseInt(strs[3]), Integer.parseInt(strs[4]), new ItemStack(Material.getMaterial(strs2[0]), 1, (short)i), Arena.ArenaStatus.fromInt(strs[2]), Integer.parseInt(strs[7]), Integer.parseInt(strs[8]));
                 return new PacketArenaCreate(arena);
             }
             catch (final Exception e) {
