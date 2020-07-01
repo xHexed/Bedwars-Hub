@@ -2,7 +2,7 @@ website: http://marcely.de
 version: "1.4"
 name: BedwarsHub
 author: Marcely1199
-main: de.marcely.bwbc.BedwarsHub
+main: com.grassminevn.bwhub.BedwarsHub
 description: Bedwars is a minigame
 commands:
   bw:
