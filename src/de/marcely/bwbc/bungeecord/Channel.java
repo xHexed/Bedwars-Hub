@@ -121,7 +121,7 @@ implements PluginMessageListener {
         final DataOutputStream out = new DataOutputStream(bytes);
         try {
             out.writeUTF("Connect");
-            out.writeUTF(name);
+            out.writeUTF(arena.getName());
             player.sendPluginMessage(BedwarsHub.plugin, "BungeeCord", bytes.toByteArray());
             out.flush();
             bytes.flush();
