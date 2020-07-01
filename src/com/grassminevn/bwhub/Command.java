@@ -33,7 +33,6 @@ public class Command
 implements CommandExecutor {
     public static final List<Player> spawningCreature = new ArrayList<>();
     private static final Pattern ARENA = Pattern.compile("\\{arena}", Pattern.LITERAL);
-    private static final Pattern NUMBER = Pattern.compile("\\{number}", Pattern.LITERAL);
 
     public boolean onCommand(final CommandSender sender, final org.bukkit.command.Command cmd, final String label, final String[] args) {
         if (!cmd(sender, label, args)) {

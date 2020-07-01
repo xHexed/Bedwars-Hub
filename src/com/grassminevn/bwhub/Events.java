@@ -37,18 +37,12 @@ package com.grassminevn.bwhub;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -59,47 +53,6 @@ public class Events
 implements Listener {
     private static final Set<UUID> antispam = new HashSet<>();
     private static final Map<UUID, Inventory> viewingArenas = new HashMap<>();
-
-    @EventHandler
-    public void onPlayerInteractEntityEvent(final PlayerInteractEntityEvent event) {
-        final String info = event.getRightClicked().getCustomName().replace(Util.config_lobbyVillagerPrefix, "");
-        final String[] strs;
-        if (event.getRightClicked().getType() == EntityType.VILLAGER && event.getRightClicked().getCustomName().startsWith(Util.config_lobbyVillagerPrefix) && ((strs = info.split("x")).length == 1 || strs.length == 2 && Util.isInteger(strs[0]) && Util.isInteger(strs[1]))) {
-            final List<Arena> list = Events.getArenas(info);
-            event.setCancelled(true);
-            if (list.size() >= 1) {
-                final Inventory inv = Bukkit.createInventory(event.getPlayer(), 27, event.getRightClicked().getCustomName());
-                Events.updateViewArena(inv, list, event.getPlayer().getUniqueId());
-                viewingArenas.put(event.getPlayer().getUniqueId(), inv);
-                event.getPlayer().openInventory(inv);
-            }
-        }
-    }
-
-    @EventHandler(priority=EventPriority.HIGHEST)
-    public void onCreatureSpawnEvent(final CreatureSpawnEvent event) {
-        if (event.getEntityType() == EntityType.VILLAGER) {
-            for (final Player player : new ArrayList<>(Command.spawningCreature)) {
-                if (player.getLocation().getX() != event.getLocation().getX() || player.getLocation().getY() != event.getLocation().getY() || player.getLocation().getZ() != event.getLocation().getZ()) continue;
-                event.setCancelled(false);
-                Command.spawningCreature.remove(player);
-            }
-        }
-    }
-
-    @EventHandler
-    public void onEntityDamageEvent(final EntityDamageEvent event) {
-        if (event.getEntityType() == EntityType.ARMOR_STAND && event.getEntity().getPassengers() != null && event.getEntity().getPassengers().get(0).getCustomName() != null && event.getEntity().getPassengers().get(0).getCustomName().startsWith(Util.config_lobbyVillagerPrefix)) {
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler
-    public void onEntityDeathEvent(final EntityDeathEvent event) {
-        if (event.getEntityType() == EntityType.VILLAGER && event.getEntity().getCustomName() != null && event.getEntity().getCustomName().startsWith(Util.config_lobbyVillagerPrefix)) {
-            event.getEntity().getVehicle().remove();
-        }
-    }
 
     @EventHandler
     public void onInventoryCloseEvent(final InventoryCloseEvent event) {
