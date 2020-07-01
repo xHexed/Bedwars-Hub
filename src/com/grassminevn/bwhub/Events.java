@@ -57,20 +57,20 @@ import java.util.*;
 
 public class Events
 implements Listener {
-    private static final Collection<Player> antispam = new ArrayList<>();
-    private static final Map<Player, Inventory> viewingArenas = new HashMap<>();
+    private static final Set<UUID> antispam = new HashSet<>();
+    private static final Map<UUID, Inventory> viewingArenas = new HashMap<>();
 
     @EventHandler
     public void onPlayerInteractEntityEvent(final PlayerInteractEntityEvent event) {
-        final String info;
+        final String info = event.getRightClicked().getCustomName().replace(Util.config_lobbyVillagerPrefix, "");
         final String[] strs;
-        if (event.getRightClicked().getType() == EntityType.VILLAGER && event.getRightClicked().getCustomName().startsWith(Util.config_lobbyVillagerPrefix) && (info = event.getRightClicked().getCustomName().replace(Util.config_lobbyVillagerPrefix, "")) != null && ((strs = info.split("x")).length == 1 || strs.length == 2 && Util.isInteger(strs[0]) && Util.isInteger(strs[1]))) {
+        if (event.getRightClicked().getType() == EntityType.VILLAGER && event.getRightClicked().getCustomName().startsWith(Util.config_lobbyVillagerPrefix) && ((strs = info.split("x")).length == 1 || strs.length == 2 && Util.isInteger(strs[0]) && Util.isInteger(strs[1]))) {
             final List<Arena> list = Events.getArenas(info);
             event.setCancelled(true);
             if (list.size() >= 1) {
                 final Inventory inv = Bukkit.createInventory(event.getPlayer(), 27, event.getRightClicked().getCustomName());
-                Events.updateViewArena(inv, list, event.getPlayer());
-                viewingArenas.put(event.getPlayer(), inv);
+                Events.updateViewArena(inv, list, event.getPlayer().getUniqueId());
+                viewingArenas.put(event.getPlayer().getUniqueId(), inv);
                 event.getPlayer().openInventory(inv);
             }
         }
@@ -103,29 +103,28 @@ implements Listener {
 
     @EventHandler
     public void onInventoryCloseEvent(final InventoryCloseEvent event) {
-        final Player player = (Player)event.getPlayer();
-        viewingArenas.remove(player);
+        viewingArenas.remove(event.getPlayer().getUniqueId());
     }
 
     @EventHandler
     public void onInventoryClickEvent(final InventoryClickEvent event) {
-        if (!viewingArenas.containsKey(event.getWhoClicked())) return;
+        if (!viewingArenas.containsKey(event.getWhoClicked().getUniqueId())) return;
         final Arena arena;
         event.setCancelled(true);
         final Player player = (Player)event.getWhoClicked();
-        if (!antispam.contains(player) && event.getClickedInventory() != null && event.getClickedInventory().getTitle() != null && event.getClickedInventory().getTitle().startsWith(Util.config_lobbyVillagerPrefix) && event.getCurrentItem() != null && event.getCurrentItem().getType() != null && event.getCurrentItem().getItemMeta() != null && event.getCurrentItem().getItemMeta().getDisplayName() != null && (arena = Util.getArena(event.getCurrentItem().getItemMeta().getDisplayName().replace(String.valueOf(ChatColor.UNDERLINE), ""))) != null) {
+        if (!antispam.contains(player.getUniqueId()) && event.getClickedInventory() != null && event.getClickedInventory().getTitle() != null && event.getClickedInventory().getTitle().startsWith(Util.config_lobbyVillagerPrefix) && event.getCurrentItem() != null && event.getCurrentItem().getType() != null && event.getCurrentItem().getItemMeta() != null && event.getCurrentItem().getItemMeta().getDisplayName() != null && (arena = Util.getArena(event.getCurrentItem().getItemMeta().getDisplayName().replace(String.valueOf(ChatColor.UNDERLINE), ""))) != null) {
             if (!Util.config_beta || Util.hasPermission(player, Permission.BetaUser)) { arena.getChannel().Connect(player, arena);
                 } else {
                 player.sendMessage(Language.Only_BetaMember.getMessage());
             }
             if (Util.config_signAntispam) {
-                antispam.add(player);
-                Bukkit.getScheduler().scheduleSyncDelayedTask(BedwarsHub.plugin, () -> antispam.remove(player), (int)(Util.config_antispamDelay * 20.0));
+                antispam.add(player.getUniqueId());
+                Bukkit.getScheduler().scheduleSyncDelayedTask(BedwarsHub.plugin, () -> antispam.remove(player.getUniqueId()), (int)(Util.config_antispamDelay * 20.0));
             }
         }
     }
 
-    private static void updateViewArena(final Inventory inv, final List<Arena> arenas, final Player player) {
+    private static void updateViewArena(final Inventory inv, final List<Arena> arenas, final UUID player) {
         if (inv != null && inv.getType() != null && inv.getType() == InventoryType.CHEST) {
             int i;
             for (i = 0; i < inv.getSize(); ++i) {
@@ -186,11 +185,11 @@ implements Listener {
 
     public static void ArenaUpdate(final boolean everything) {
         if (!everything) {
-            for (final Map.Entry<Player, Inventory> entry : viewingArenas.entrySet()) {
+            for (final Map.Entry<UUID, Inventory> entry : viewingArenas.entrySet()) {
                 Events.updateViewArena(entry.getValue());
             }
         } else {
-            for (final Map.Entry<Player, Inventory> entry : viewingArenas.entrySet()) {
+            for (final Map.Entry<UUID, Inventory> entry : viewingArenas.entrySet()) {
                 Events.updateViewArena(entry.getValue(), Events.getArenas(entry.getValue().getTitle().replace(Util.config_lobbyVillagerPrefix, "")), entry.getKey());
             }
         }
