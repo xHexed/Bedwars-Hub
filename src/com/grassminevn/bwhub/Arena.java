@@ -8,7 +8,6 @@
 package com.grassminevn.bwhub;
 
 import com.grassminevn.bwhub.bungeecord.Channel;
-import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -113,26 +112,7 @@ public class Arena {
 
     public List<String> getLore() {
         final List<String> list = new ArrayList<>();
-        int i = 0;
-        String madeBy = "";
-        final String[] madeByList = this.madeBy.split(",");
-        for (final String str : this.madeBy.split(",")) {
-            if (i == 0) {
-                if (madeByList.length == 1) {
-                    list.add(ChatColor.DARK_AQUA + Language.Info_MadeBy.getMessage() + ": " + ChatColor.AQUA + str);
-                } else {
-                    list.add(ChatColor.DARK_AQUA + Language.Info_MadeBy.getMessage() + ": " + ChatColor.AQUA + str + ", ");
-                }
-            } else {
-                madeBy = i == madeByList.length - 1 ? madeBy + str : madeBy + str + ", ";
-            }
-            if (madeBy.split(",").length >= 4) {
-                list.add(ChatColor.AQUA + madeBy);
-                madeBy = "";
-            }
-            ++i;
-        }
-        list.add(ChatColor.DARK_BLUE + "-----------");
+        list.add("§fMap: " + madeBy);
         if (status == ArenaStatus.Running) {
             list.add(Language.Sign_Running.getMessage());
         } else if (status == ArenaStatus.Stopped) {
@@ -142,6 +122,7 @@ public class Arena {
         } else if (status == ArenaStatus.Reseting || status == ArenaStatus.EndLobby) {
             list.add(Language.Sign_Reseting.getMessage());
         }
+        list.add("§fNgười chơi: " + players + "/" + maxPlayers);
         return list;
     }
 
@@ -175,6 +156,5 @@ public class Arena {
             return null;
         }
     }
-
 }
 

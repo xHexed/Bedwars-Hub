@@ -35,6 +35,7 @@
  */
 package com.grassminevn.bwhub;
 
+import com.grassminevn.bwhub.inventory.SelectorMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -42,17 +43,26 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Events
 implements Listener {
+    private static final Random random = ThreadLocalRandom.current();
     private static final Set<UUID> antispam = new HashSet<>();
     private static final Map<UUID, Inventory> viewingArenas = new HashMap<>();
+
+    @EventHandler
+    public void onInventoryOpenEvent(final InventoryOpenEvent event) {
+        if (!(event.getInventory().getHolder() instanceof SelectorMenu)) return;
+        viewingArenas.put(event.getPlayer().getUniqueId(), event.getInventory());
+    }
 
     @EventHandler
     public void onInventoryCloseEvent(final InventoryCloseEvent event) {
@@ -61,20 +71,80 @@ implements Listener {
 
     @EventHandler
     public void onInventoryClickEvent(final InventoryClickEvent event) {
-        if (!viewingArenas.containsKey(event.getWhoClicked().getUniqueId())) return;
-        final Arena arena;
+        if (!(event.getClickedInventory().getHolder() instanceof SelectorMenu)) return;
         event.setCancelled(true);
-        final Player player = (Player)event.getWhoClicked();
-        if (!antispam.contains(player.getUniqueId()) && event.getClickedInventory() != null && event.getClickedInventory().getTitle() != null && event.getClickedInventory().getTitle().startsWith(Util.config_lobbyVillagerPrefix) && event.getCurrentItem() != null && event.getCurrentItem().getType() != null && event.getCurrentItem().getItemMeta() != null && event.getCurrentItem().getItemMeta().getDisplayName() != null && (arena = Util.getArena(event.getCurrentItem().getItemMeta().getDisplayName().replace(String.valueOf(ChatColor.UNDERLINE), ""))) != null) {
-            if (!Util.config_beta || Util.hasPermission(player, Permission.BetaUser)) { arena.getChannel().Connect(player, arena);
-                } else {
+        final Player player = (Player) event.getWhoClicked();
+        final int slot = event.getSlot();
+        if (isArenaClicked(slot)) {
+            final Arena arena = Util.getArena(getMode(slot) + getArenaNumber(slot));
+            if (antispam.contains(player.getUniqueId()))
+                return;
+            if (!Util.config_beta || Util.hasPermission(player, Permission.BetaUser)) {
+                if (isAutoJoin(slot)) {
+                    final ArrayList<Arena> goodArenas = new ArrayList<>();
+                    final String autoMode = getMode(slot);
+                    for (final Arena a : Util.arenas) {
+                        if (a.hideFromAutoSign()) continue;
+                        if (a.getName().startsWith(autoMode)) continue;
+                        if (goodArenas.size() == 0) {
+                            goodArenas.add(a);
+                            continue;
+                        }
+                        if (a.getPlayers() > goodArenas.get(0).getPlayers()) {
+                            goodArenas.clear();
+                            goodArenas.add(a);
+                            continue;
+                        }
+                        if (a.getPlayers() != goodArenas.get(0).getPlayers()) continue;
+                        goodArenas.add(a);
+                    }
+                    if (goodArenas.size() >= 1) {
+                        arena.getChannel().Connect(player, goodArenas.get(random.nextInt(goodArenas.size())));
+                    } else {
+                        player.sendMessage(Language.Arenas_Full.getMessage());
+                    }
+                } else
+                    arena.getChannel().Connect(player, arena);
+            } else {
                 player.sendMessage(Language.Only_BetaMember.getMessage());
             }
             if (Util.config_signAntispam) {
                 antispam.add(player.getUniqueId());
-                Bukkit.getScheduler().scheduleSyncDelayedTask(BedwarsHub.plugin, () -> antispam.remove(player.getUniqueId()), (int)(Util.config_antispamDelay * 20.0));
+                Bukkit.getScheduler().scheduleSyncDelayedTask(BedwarsHub.plugin, () -> antispam.remove(player.getUniqueId()), (int) (Util.config_antispamDelay * 20));
             }
         }
+    }
+
+    private boolean isArenaClicked(final int slot) {
+        return slot >= 9 && slot <= 35;
+    }
+
+    private int getArenaNumber(final int slot) {
+        if (slot >= 10 && slot <= 17)
+            return slot - 9;
+        if (slot >= 19 && slot <= 26)
+            return slot - 18;
+        if (slot >= 28 && slot <= 35)
+            return slot - 27;
+        else
+            return 0;
+    }
+
+    private String getMode(final int slot) {
+        switch (slot) {
+            case 9:
+                return "solo";
+            case 18:
+                return "duo";
+            case 27:
+                return "squad";
+            default:
+                return "";
+        }
+    }
+
+    private boolean isAutoJoin(final int slot) {
+        return slot == 9 || slot == 18 || slot == 27;
     }
 
     private static void updateViewArena(final Inventory inv, final List<Arena> arenas, final UUID player) {

@@ -17,6 +17,7 @@ package com.grassminevn.bwhub;
 
 import com.grassminevn.bwhub.config.Config;
 import com.grassminevn.bwhub.config.LanguageConfig;
+import com.grassminevn.bwhub.inventory.SelectorMenu;
 import com.grassminevn.bwhub.library.Vault;
 import com.grassminevn.bwhub.bungeecord.JobManager;
 import org.bukkit.Bukkit;
@@ -40,19 +41,12 @@ extends JavaPlugin {
         Vault.onEnable();
         LanguageConfig.load();
         Config.load();
+        SelectorMenu.load();
         JobManager.onEnable();
     }
 
     public void onDisable() {
         JobManager.onDisable();
-    }
-
-    public static String getAuthor() {
-        return plugin.getDescription().getAuthors().get(0);
-    }
-
-    public static String getWebsite() {
-        return plugin.getDescription().getWebsite();
     }
 
     public static String getVersion() {

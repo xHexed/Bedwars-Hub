@@ -19,8 +19,5 @@ public class JobStatus {
     public Channel getChannel() {
         return channel;
     }
-
-    public void done() {
-    }
 }
 

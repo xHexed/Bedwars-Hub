@@ -19,8 +19,7 @@ public class JobManager {
     private static SocketManager manager;
 
     public static void onEnable() {
-        manager = new SocketManager(){
-
+        manager = new SocketManager() {
             @Override
             public void onReceive(final DatagramPacket packet) {
                 Communication.onPacketReceived(packet);
@@ -35,7 +34,6 @@ public class JobManager {
                     if (i > 8) break;
                     if (job.getChannel().isRegistred()) {
                         manager.sendPacket(job.getChannel().getInetAddress(), job.getChannel().getPort(), job.getPacket().getPacketString().getBytes());
-                        job.done();
                         jobs.remove(job);
                     }
                     ++i;
