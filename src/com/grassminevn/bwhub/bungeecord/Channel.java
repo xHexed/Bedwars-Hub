@@ -17,14 +17,14 @@
 package com.grassminevn.bwhub.bungeecord;
 
 import com.grassminevn.bwhub.*;
-import com.grassminevn.bwhub.Console;
-import com.grassminevn.bwhub.bungeecord.out.PacketConnectPlayer;
-import com.grassminevn.bwhub.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.DataInput;
+import java.io.DataInputStream;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -90,20 +90,16 @@ implements PluginMessageListener {
         }
     }
 
-    public void sendPacket(final Packet packet) {
-        JobManager.addJob(new JobStatus(packet, this));
-    }
-
-    public void Connect(final Player player, final Arena arena) {
+    public void connect(final Player player, final Arena arena) {
         if (arena.getStatus() == Arena.ArenaStatus.Lobby) {
             if (arena.getPlayers() < arena.getMaxPlayers()) {
-                connect(player, arena);
+                Util.connect(player, arena);
             } else {
                 player.sendMessage(Language.JoinMessage_full.getMessage());
             }
         } else if (arena.getStatus() == Arena.ArenaStatus.Running) {
             if (Util.config_spectator) {
-                connect(player, arena);
+                Util.connect(player, arena);
             } else {
                 player.sendMessage(Language.JoinMessage_running.getMessage());
             }
@@ -113,25 +109,5 @@ implements PluginMessageListener {
             player.sendMessage(Language.JoinMessage_stopped.getMessage());
         }
     }
-
-    private void connect(final Player player, final Arena arena) {
-        player.sendMessage(Language.JoinMessage_connecting.getMessage());
-        sendPacket(new PacketConnectPlayer(player.getUniqueId(), arena));
-        final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        final DataOutputStream out = new DataOutputStream(bytes);
-        try {
-            out.writeUTF("Connect");
-            out.writeUTF(arena.getName());
-            player.sendPluginMessage(BedwarsHub.plugin, "BungeeCord", bytes.toByteArray());
-            out.flush();
-            bytes.flush();
-            out.close();
-            bytes.close();
-        }
-        catch (final IOException e) {
-            e.printStackTrace();
-        }
-    }
-
 }
 

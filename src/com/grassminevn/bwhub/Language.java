@@ -21,7 +21,7 @@ public enum Language {
     Unkown_Argument(ChatColor.RED + "Unkown argument " + ChatColor.DARK_RED + "{arg}"),
     Error_Occured(ChatColor.RED + "A error occured!"),
     No_Permissions(ChatColor.RED + "You've got no permissions!"),
-    Sign_Lobby(ChatColor.YELLOW + "{ingame}/{max}"),
+    Sign_Lobby(ChatColor.YELLOW + "Waiting..."),
     Sign_Running(ChatColor.GOLD + "Running"),
     Sign_Stopped(ChatColor.RED + "Stopped"),
     Sign_Reseting(ChatColor.GREEN + "Reseting"),

@@ -35,7 +35,7 @@ public class Communication {
                     }
                     channel = new Channel(packet.getChannelName(), bigPacket.getAddress(), bigPacket.getPort());
                     Util.channels.add(channel);
-                    channel.sendPacket(new PacketChannelEnabled(Util.config_subchannel));
+                    Util.sendPacket(new PacketChannelEnabled(Util.config_subchannel), channel);
                     return;
                 }
                 final Channel channel = Util.getChannel(bigPacket.getAddress(), bigPacket.getPort());

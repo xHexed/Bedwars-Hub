@@ -12,12 +12,8 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Arena {
-    private static final Pattern INGAME = Pattern.compile("\\{ingame}", Pattern.LITERAL);
-    private static final Pattern MAX = Pattern.compile("\\{max}", Pattern.LITERAL);
     private final Channel channel;
     private String name;
     private String madeBy;
@@ -118,7 +114,7 @@ public class Arena {
         } else if (status == ArenaStatus.Stopped) {
             list.add(Language.Sign_Stopped.getMessage());
         } else if (status == ArenaStatus.Lobby) {
-            list.add(MAX.matcher(INGAME.matcher(Language.Sign_Lobby.getMessage()).replaceAll(Matcher.quoteReplacement(String.valueOf(players)))).replaceAll(Matcher.quoteReplacement(String.valueOf(maxPlayers))));
+            list.add(Language.Sign_Lobby.getMessage());
         } else if (status == ArenaStatus.Reseting || status == ArenaStatus.EndLobby) {
             list.add(Language.Sign_Reseting.getMessage());
         }

@@ -11,11 +11,11 @@ import com.grassminevn.bwhub.BedwarsHub;
 import org.bukkit.Bukkit;
 
 import java.net.DatagramPacket;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class JobManager {
-    private static final List<JobStatus> jobs = new ArrayList<>();
+    private static final Collection<JobStatus> jobs = new ConcurrentLinkedQueue<>();
     private static SocketManager manager;
 
     public static void onEnable() {
@@ -28,16 +28,15 @@ public class JobManager {
         manager.inject();
         manager.startReceivingPackets();
         Bukkit.getScheduler().scheduleSyncRepeatingTask(BedwarsHub.plugin, () -> {
-            if (jobs.size() >= 1) {
-                int i = 0;
-                for (final JobStatus job : new ArrayList<>(jobs)) {
-                    if (i > 8) break;
-                    if (job.getChannel().isRegistred()) {
-                        manager.sendPacket(job.getChannel().getInetAddress(), job.getChannel().getPort(), job.getPacket().getPacketString().getBytes());
-                        jobs.remove(job);
-                    }
-                    ++i;
+            if (jobs.isEmpty()) return;
+            int limit = 0;
+            for (final JobStatus job : jobs) {
+                if (limit > 8) break;
+                if (job.getChannel().isRegistred()) {
+                    manager.sendPacket(job.getChannel().getInetAddress(), job.getChannel().getPort(), job.getPacket().getPacketString().getBytes());
+                    jobs.remove(job);
                 }
+                ++limit;
             }
         }, 0L, 20L);
     }

@@ -16,18 +16,27 @@
  */
 package com.grassminevn.bwhub;
 
+import com.grassminevn.bwhub.bungeecord.JobManager;
+import com.grassminevn.bwhub.bungeecord.JobStatus;
+import com.grassminevn.bwhub.bungeecord.Packet;
+import com.grassminevn.bwhub.bungeecord.out.PacketConnectPlayer;
 import com.grassminevn.bwhub.library.Vault;
 import com.grassminevn.bwhub.bungeecord.Channel;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Pattern;
 
 public class Util {
+    private static final Random random = ThreadLocalRandom.current();
     public static final Pattern SLASH = Pattern.compile("/", Pattern.LITERAL);
     public static final Pattern KEYSLASH = Pattern.compile("&sKEYslash;", Pattern.LITERAL);
     public static boolean config_beta;
@@ -105,5 +114,52 @@ public class Util {
         return true;
     }
 
+    public static void autoJoin(final Player player, final String mode) {
+        final ArrayList<Arena> goodArenas = new ArrayList<>();
+        for (final Arena a : Util.arenas) {
+            if (a.hideFromAutoSign()) continue;
+            if (a.getName().startsWith(mode)) continue;
+            if (goodArenas.size() == 0) {
+                goodArenas.add(a);
+                continue;
+            }
+            if (a.getPlayers() > goodArenas.get(0).getPlayers()) {
+                goodArenas.clear();
+                goodArenas.add(a);
+                continue;
+            }
+            if (a.getPlayers() != goodArenas.get(0).getPlayers()) continue;
+            goodArenas.add(a);
+        }
+        if (goodArenas.size() >= 1) {
+            connect(player, goodArenas.get(random.nextInt(goodArenas.size())));
+        } else {
+            player.sendMessage(Language.Arenas_Full.getMessage());
+        }
+    }
+
+    public static void connect(final Player player, final Arena arena) {
+        player.sendMessage(Language.JoinMessage_connecting.getMessage());
+        sendPacket(new PacketConnectPlayer(player.getUniqueId(), arena), arena.getChannel());
+        final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        final DataOutputStream out = new DataOutputStream(bytes);
+        System.out.println(arena.getName());
+        try {
+            out.writeUTF("connect");
+            out.writeUTF(arena.getName());
+            player.sendPluginMessage(BedwarsHub.plugin, "BungeeCord", bytes.toByteArray());
+            out.flush();
+            bytes.flush();
+            out.close();
+            bytes.close();
+        }
+        catch (final IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void sendPacket(final Packet packet, final Channel channel) {
+        JobManager.addJob(new JobStatus(packet, channel));
+    }
 }
 

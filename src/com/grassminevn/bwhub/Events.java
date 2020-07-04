@@ -50,11 +50,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class Events
 implements Listener {
-    private static final Random random = ThreadLocalRandom.current();
     private static final Set<UUID> antispam = new HashSet<>();
     private static final Map<UUID, Inventory> viewingArenas = new HashMap<>();
 
@@ -77,40 +75,21 @@ implements Listener {
         final int slot = event.getSlot();
         if (isArenaClicked(slot)) {
             final Arena arena = Util.getArena(getMode(slot) + getArenaNumber(slot));
+            if (arena == null) return;
             if (antispam.contains(player.getUniqueId()))
                 return;
             if (!Util.config_beta || Util.hasPermission(player, Permission.BetaUser)) {
                 if (isAutoJoin(slot)) {
-                    final ArrayList<Arena> goodArenas = new ArrayList<>();
                     final String autoMode = getMode(slot);
-                    for (final Arena a : Util.arenas) {
-                        if (a.hideFromAutoSign()) continue;
-                        if (a.getName().startsWith(autoMode)) continue;
-                        if (goodArenas.size() == 0) {
-                            goodArenas.add(a);
-                            continue;
-                        }
-                        if (a.getPlayers() > goodArenas.get(0).getPlayers()) {
-                            goodArenas.clear();
-                            goodArenas.add(a);
-                            continue;
-                        }
-                        if (a.getPlayers() != goodArenas.get(0).getPlayers()) continue;
-                        goodArenas.add(a);
-                    }
-                    if (goodArenas.size() >= 1) {
-                        arena.getChannel().Connect(player, goodArenas.get(random.nextInt(goodArenas.size())));
-                    } else {
-                        player.sendMessage(Language.Arenas_Full.getMessage());
-                    }
+                    Util.autoJoin(player, autoMode);
                 } else
-                    arena.getChannel().Connect(player, arena);
+                    arena.getChannel().connect(player, arena);
             } else {
                 player.sendMessage(Language.Only_BetaMember.getMessage());
             }
             if (Util.config_signAntispam) {
                 antispam.add(player.getUniqueId());
-                Bukkit.getScheduler().scheduleSyncDelayedTask(BedwarsHub.plugin, () -> antispam.remove(player.getUniqueId()), (int) (Util.config_antispamDelay * 20));
+                Bukkit.getScheduler().runTaskLater(BedwarsHub.plugin, () -> antispam.remove(player.getUniqueId()), (int) (Util.config_antispamDelay * 20));
             }
         }
     }
@@ -131,16 +110,12 @@ implements Listener {
     }
 
     private String getMode(final int slot) {
-        switch (slot) {
-            case 9:
-                return "solo";
-            case 18:
-                return "duo";
-            case 27:
-                return "squad";
-            default:
-                return "";
-        }
+        if (slot >= 9 && slot <= 17)
+            return "solo";
+        if (slot >= 18 && slot <= 26)
+            return "duo";
+        else
+            return "sq";
     }
 
     private boolean isAutoJoin(final int slot) {

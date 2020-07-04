@@ -26,7 +26,6 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -63,7 +62,7 @@ implements CommandExecutor {
                             final Player player = (Player)sender;
                             final Arena arena = Util.getArena(args[1]);
                             if (arena != null) {
-                                arena.getChannel().Connect(player, arena);
+                                arena.getChannel().connect(player, arena);
                             } else {
                                 player.sendMessage(ARENA.matcher(Language.NotFound_Arena.getMessage()).replaceAll(Matcher.quoteReplacement(args[1])));
                             }
@@ -77,28 +76,7 @@ implements CommandExecutor {
                 }
                 case "autojoin": {
                     if (sender instanceof Player) {
-                        final Player player = (Player)sender;
-                        final ArrayList<Arena> goodArenas = new ArrayList<>();
-                        for (final Arena a : Util.arenas) {
-                            if (a.hideFromAutoSign()) continue;
-                            if (goodArenas.size() == 0) {
-                                goodArenas.add(a);
-                                continue;
-                            }
-                            if (a.getPlayers() > goodArenas.get(0).getPlayers()) {
-                                goodArenas.clear();
-                                goodArenas.add(a);
-                                continue;
-                            }
-                            if (a.getPlayers() != goodArenas.get(0).getPlayers()) continue;
-                            goodArenas.add(a);
-                        }
-                        if (goodArenas.size() >= 1) {
-                            final Arena arena = goodArenas.get(new Random().nextInt(goodArenas.size()));
-                            arena.getChannel().Connect(player, arena);
-                        } else {
-                            sender.sendMessage(Language.Arenas_Full.getMessage());
-                        }
+                        Util.autoJoin((Player) sender, "");
                     } else {
                         sender.sendMessage(ChatColor.GOLD + Language.Usage.getMessage() + ": " + ChatColor.YELLOW + "/" + label + " join <arena name>");
                     }
@@ -125,6 +103,7 @@ implements CommandExecutor {
                 case "menu": {
                     if (!(sender instanceof Player)) return false;
                     ((HumanEntity) sender).openInventory(new SelectorMenu().getInventory());
+                    return true;
                 }
             }
             return false;

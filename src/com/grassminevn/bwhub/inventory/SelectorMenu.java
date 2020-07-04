@@ -13,50 +13,53 @@ import java.util.Arrays;
 import java.util.Collections;
 
 public class SelectorMenu implements InventoryHolder {
-    private static final Inventory inventory = Bukkit.createInventory(new SelectorMenu(), 54, "Chọn phòng");
+    private final Inventory inventory = Bukkit.createInventory(this, 54, "Chọn phòng");
 
-    public static void load() {
+    public SelectorMenu() {
         final ItemStack solo = new ItemStack(Material.WOOD_SWORD);
         ItemMeta meta = solo.getItemMeta();
         for (int i = 1; i <= 8; i++) {
-            final Arena arena = Util.getArena("sl" + i);
             meta.setDisplayName("§fPhòng: Solo " + i);
+            final Arena arena = Util.getArena("sl" + i);
             if (arena == null) {
-                meta.setLore(Arrays.asList("§fMap: Road", "§fTrạng thái: Dừng hoạt động", "§fNgười chơi: 0/16"));
+                meta.setLore(Arrays.asList("§fMap: Road", "§fTrạng thái: Dừng hoạt động", "§fNgười chơi: 0/8"));
             }
             else {
                 meta.setLore(arena.getLore());
             }
+            solo.setAmount(i);
             solo.setItemMeta(meta);
-            inventory.setItem(i + 8, solo);
+            inventory.setItem(i + 9, solo);
         }
         final ItemStack duo = new ItemStack(Material.IRON_SWORD);
         meta = duo.getItemMeta();
         for (int i = 1; i <= 8; i++) {
-            final Arena arena = Util.getArena("du" + i);
             meta.setDisplayName("§fPhòng: Duo " + i);
+            final Arena arena = Util.getArena("du" + i);
             if (arena == null) {
                 meta.setLore(Arrays.asList("§fMap: Road", "§fTrạng thái: Dừng hoạt động", "§fNgười chơi: 0/16"));
             }
             else {
                 meta.setLore(arena.getLore());
             }
+            duo.setAmount(i);
             duo.setItemMeta(meta);
-            inventory.setItem(i + 17, duo);
+            inventory.setItem(i + 18, duo);
         }
         final ItemStack squad = new ItemStack(Material.GOLD_SWORD);
         meta = squad.getItemMeta();
         for (int i = 1; i <= 8; i++) {
-            final Arena arena = Util.getArena("sq" + i);
             meta.setDisplayName("§fPhòng: Squad " + i);
+            final Arena arena = Util.getArena("sq" + i);
             if (arena == null) {
                 meta.setLore(Arrays.asList("§fMap: Road", "§fTrạng thái: Dừng hoạt động", "§fNgười chơi: 0/16"));
             }
             else {
                 meta.setLore(arena.getLore());
             }
+            squad.setAmount(i);
             squad.setItemMeta(meta);
-            inventory.setItem(i + 26, squad);
+            inventory.setItem(i + 27, squad);
         }
         final ItemStack special = new ItemStack(Material.DIAMOND_SWORD);
         meta = special.getItemMeta();
@@ -68,6 +71,8 @@ public class SelectorMenu implements InventoryHolder {
         meta = auto.getItemMeta();
         meta.setDisplayName("§fTự động tìm phòng");
         meta.setLore(Arrays.asList("§fClick để tự động tìm phòng", "§fngẫu nhiên."));
+        auto.setItemMeta(meta);
+        inventory.setItem(41, auto);
     }
 
     @Override

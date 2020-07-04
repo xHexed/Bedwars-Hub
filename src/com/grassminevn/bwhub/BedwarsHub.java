@@ -15,11 +15,10 @@
  */
 package com.grassminevn.bwhub;
 
+import com.grassminevn.bwhub.bungeecord.JobManager;
 import com.grassminevn.bwhub.config.Config;
 import com.grassminevn.bwhub.config.LanguageConfig;
-import com.grassminevn.bwhub.inventory.SelectorMenu;
 import com.grassminevn.bwhub.library.Vault;
-import com.grassminevn.bwhub.bungeecord.JobManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.plugin.Plugin;
@@ -41,7 +40,6 @@ extends JavaPlugin {
         Vault.onEnable();
         LanguageConfig.load();
         Config.load();
-        SelectorMenu.load();
         JobManager.onEnable();
     }
 
