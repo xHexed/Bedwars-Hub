@@ -114,8 +114,8 @@ public class Util {
         final ArrayList<Arena> goodArenas = new ArrayList<>();
         for (final Arena a : Util.arenas) {
             if (a.hideFromAutoSign()) continue;
-            if (a.getName().startsWith(mode)) continue;
-            if (goodArenas.size() == 0) {
+            if (!a.getName().startsWith(mode)) continue;
+            if (goodArenas.isEmpty()) {
                 goodArenas.add(a);
                 continue;
             }
@@ -127,7 +127,7 @@ public class Util {
             if (a.getPlayers() != goodArenas.get(0).getPlayers()) continue;
             goodArenas.add(a);
         }
-        if (goodArenas.size() >= 1) {
+        if (!goodArenas.isEmpty()) {
             connect(player, goodArenas.get(random.nextInt(goodArenas.size())));
         } else {
             player.sendMessage(Language.Arenas_Full.getMessage());
