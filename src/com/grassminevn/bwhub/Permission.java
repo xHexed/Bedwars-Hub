@@ -4,10 +4,9 @@
 package com.grassminevn.bwhub;
 
 public enum Permission {
-    Command_Summon("bw.summon"),
+    Reload("bw.reload"),
     Command_List("bw.list"),
     Command_Info("bw.info"),
-    Command_Join("bw.join"),
     BetaUser("bw.beta");
     
     private final String selected_permission;

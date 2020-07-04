@@ -37,29 +37,24 @@ package com.grassminevn.bwhub;
 
 import com.grassminevn.bwhub.inventory.SelectorMenu;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 
-public class Events
-implements Listener {
+public class Events implements Listener {
     private static final Set<UUID> antispam = new HashSet<>();
-    private static final Map<UUID, Inventory> viewingArenas = new HashMap<>();
+    private static final Collection<UUID> viewingArenas = new HashSet<>();
 
     @EventHandler
     public void onInventoryOpenEvent(final InventoryOpenEvent event) {
         if (!(event.getInventory().getHolder() instanceof SelectorMenu)) return;
-        viewingArenas.put(event.getPlayer().getUniqueId(), event.getInventory());
+        viewingArenas.add(event.getPlayer().getUniqueId());
     }
 
     @EventHandler
@@ -69,10 +64,14 @@ implements Listener {
 
     @EventHandler
     public void onInventoryClickEvent(final InventoryClickEvent event) {
-        if (!(event.getClickedInventory().getHolder() instanceof SelectorMenu)) return;
+        final Inventory inventory = event.getClickedInventory();
+        if (inventory != null && !(inventory.getHolder() instanceof SelectorMenu)) return;
         event.setCancelled(true);
         final Player player = (Player) event.getWhoClicked();
         final int slot = event.getSlot();
+        if (slot == 41) {
+            Util.autoJoin(player, "");
+        }
         if (isArenaClicked(slot)) {
             final Arena arena = Util.getArena(getMode(slot) + getArenaNumber(slot));
             if (arena == null) return;
@@ -111,106 +110,25 @@ implements Listener {
 
     private String getMode(final int slot) {
         if (slot >= 9 && slot <= 17)
-            return "solo";
+            return "bw_solo";
         if (slot >= 18 && slot <= 26)
-            return "duo";
+            return "bw_duo";
         else
-            return "sq";
+            return "bw_squad";
     }
 
     private boolean isAutoJoin(final int slot) {
         return slot == 9 || slot == 18 || slot == 27;
     }
 
-    private static void updateViewArena(final Inventory inv, final List<Arena> arenas, final UUID player) {
-        if (inv != null && inv.getType() != null && inv.getType() == InventoryType.CHEST) {
-            int i;
-            for (i = 0; i < inv.getSize(); ++i) {
-                inv.setItem(i, null);
-            }
-            if (arenas != null) {
-                if (arenas.size() == 1 && inv.getSize() > 13) {
-                    inv.setItem(13, Events.getViewArenaItem(arenas.get(0)));
-                } else if (arenas.size() > 1) {
-                    i = 0;
-                    final int max = inv.getSize();
-                    for (final Arena arena : arenas) {
-                        if (i < max) {
-                            inv.setItem(i, Events.getViewArenaItem(arena));
-                        }
-                        ++i;
-                    }
-                }
-            }
-        } else {
-            viewingArenas.remove(player);
+    private static void updateViewArena() {
+        for (final UUID uuid : viewingArenas) {
+            Bukkit.getPlayer(uuid).openInventory(new SelectorMenu().getInventory());
         }
     }
 
-    private static void updateViewArena(final Inventory inv) {
-        if (inv.getItem(0) == null && inv.getItem(13) != null) {
-            final String name = inv.getItem(13).getItemMeta().getDisplayName().replace(String.valueOf(ChatColor.UNDERLINE), "");
-            final Arena arena = Util.getArena(name);
-            if (arena != null) {
-                inv.setItem(13, Events.getViewArenaItem(arena));
-            }
-        } else {
-            for (int i = 0; i < inv.getSize(); ++i) {
-                if (inv.getItem(i) == null) continue;
-                final String name = inv.getItem(i).getItemMeta().getDisplayName().replace(String.valueOf(ChatColor.UNDERLINE), "");
-                final Arena arena = Util.getArena(name);
-                if (arena != null) {
-                    inv.setItem(i, Events.getViewArenaItem(arena));
-                    continue;
-                }
-                inv.setItem(i, null);
-            }
-        }
+    public static void updateView() {
+        updateViewArena();
     }
-
-    private static ItemStack getViewArenaItem(final Arena arena) {
-        final ItemStack is = arena.getIcon().clone();
-        final ItemMeta im = is.getItemMeta();
-        im.setDisplayName(ChatColor.UNDERLINE + arena.getName());
-        im.setLore(arena.getLore());
-        is.setItemMeta(im);
-        return is;
-    }
-
-    public static void ArenaUpdate() {
-        Events.ArenaUpdate(false);
-    }
-
-    public static void ArenaUpdate(final boolean everything) {
-        if (!everything) {
-            for (final Map.Entry<UUID, Inventory> entry : viewingArenas.entrySet()) {
-                Events.updateViewArena(entry.getValue());
-            }
-        } else {
-            for (final Map.Entry<UUID, Inventory> entry : viewingArenas.entrySet()) {
-                Events.updateViewArena(entry.getValue(), Events.getArenas(entry.getValue().getTitle().replace(Util.config_lobbyVillagerPrefix, "")), entry.getKey());
-            }
-        }
-    }
-
-    private static List<Arena> getArenas(final String str) {
-        final List<Arena> list = new ArrayList<>();
-        final String[] strs = str.split("x");
-        if (strs.length == 1 || strs.length >= 1 && !Util.isInteger(strs[0])) {
-            final Arena arena = Util.getArena(strs[0]);
-            if (arena != null) {
-                list.add(arena);
-            }
-        } else if (strs.length == 2) {
-            final int teams = Integer.parseInt(strs[0]);
-            final int playersInTeam = Integer.parseInt(strs[1]);
-            for (final Arena arena : Util.arenas) {
-                if (arena.getTeams() != teams || arena.getInTeamPlayers() != playersInTeam) continue;
-                list.add(arena);
-            }
-        }
-        return list;
-    }
-
 }
 

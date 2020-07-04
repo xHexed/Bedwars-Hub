@@ -16,22 +16,23 @@
  */
 package com.grassminevn.bwhub;
 
+import com.grassminevn.bwhub.bungeecord.Channel;
 import com.grassminevn.bwhub.bungeecord.JobManager;
 import com.grassminevn.bwhub.bungeecord.JobStatus;
 import com.grassminevn.bwhub.bungeecord.Packet;
 import com.grassminevn.bwhub.bungeecord.out.PacketConnectPlayer;
-import com.grassminevn.bwhub.library.Vault;
-import com.grassminevn.bwhub.bungeecord.Channel;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.Permissible;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Pattern;
 
@@ -57,12 +58,12 @@ public class Util {
 
     public static void removeArena(final Arena arena) {
         arenas.remove(arena);
-        Events.ArenaUpdate(true);
+        Events.updateView();
     }
 
     public static void addArena(final Arena arena) {
         arenas.add(arena);
-        Events.ArenaUpdate(true);
+        Events.updateView();
     }
 
     public static Arena getArena(final String name) {
@@ -102,14 +103,9 @@ public class Util {
         }
     }
 
-    public static boolean hasPermission(final CommandSender sender, final Permission permission) {
+    public static boolean hasPermission(final Permissible sender, final Permission permission) {
         if (sender instanceof Player) {
-            final Player player = (Player)sender;
-            final Boolean bl = Vault.hasPermission(player, permission.getPermission());
-            if (bl != null) {
-                return bl;
-            }
-            return player.hasPermission(permission.getPermission());
+            return hasPermission(sender, permission.getPermission());
         }
         return true;
     }
@@ -143,9 +139,8 @@ public class Util {
         sendPacket(new PacketConnectPlayer(player.getUniqueId(), arena), arena.getChannel());
         final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         final DataOutputStream out = new DataOutputStream(bytes);
-        System.out.println(arena.getName());
         try {
-            out.writeUTF("connect");
+            out.writeUTF("Connect");
             out.writeUTF(arena.getName());
             player.sendPluginMessage(BedwarsHub.plugin, "BungeeCord", bytes.toByteArray());
             out.flush();
@@ -160,6 +155,10 @@ public class Util {
 
     public static void sendPacket(final Packet packet, final Channel channel) {
         JobManager.addJob(new JobStatus(packet, channel));
+    }
+
+    private static Boolean hasPermission(final Permissible player, final String perm) {
+        return player.hasPermission(perm);
     }
 }
 

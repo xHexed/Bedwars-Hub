@@ -38,32 +38,32 @@ public class Arena {
 
     public void setName(final String name) {
         this.name = name;
-        Events.ArenaUpdate();
+        Events.updateView();
     }
 
     public void setMadeBy(final String madeBy) {
         this.madeBy = madeBy;
-        Events.ArenaUpdate();
+        Events.updateView();
     }
 
     public void setPlayers(final int players) {
         this.players = players;
-        Events.ArenaUpdate();
+        Events.updateView();
     }
 
     public void setMaxPlayers(final int maxPlayers) {
         this.maxPlayers = maxPlayers;
-        Events.ArenaUpdate();
+        Events.updateView();
     }
 
     public void setIcon(final ItemStack icon) {
         this.icon = icon;
-        Events.ArenaUpdate();
+        Events.updateView();
     }
 
     public void setStatus(final ArenaStatus status) {
         this.status = status;
-        Events.ArenaUpdate();
+        Events.updateView();
     }
 
     public void setInTeamPlayers(final int inTeamPlayers) {

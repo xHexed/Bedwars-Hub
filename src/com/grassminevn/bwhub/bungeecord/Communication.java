@@ -20,10 +20,10 @@ public class Communication {
         if ((msg = msg.substring(0, bigPacket.getLength())).length() >= 1) {
             final String[] strs = msg.split("/");
             if (Util.isInteger(strs[0])) {
-                final PacketChannelExists packet;
+                final PacketChannelExists packet = PacketChannelExists.build(msg);
                 final PacketArenaUpdateTeamPlayers packet2;
                 final Packet.PacketType type = Packet.PacketType.fromInt(strs[0]);
-                if (type == Packet.PacketType.IN_PacketChannelExists && (packet = PacketChannelExists.build(msg)) != null) {
+                if (type == Packet.PacketType.IN_PacketChannelExists && packet != null) {
                     Channel channel;
                     if (Util.getChannel(packet.getChannelName()) != null) {
                         channel = Util.getChannel(packet.getChannelName());
