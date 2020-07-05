@@ -18,98 +18,10 @@ public class SelectorMenu implements InventoryHolder {
     private final Inventory inventory = Bukkit.createInventory(this, 54, "Chọn phòng");
 
     public SelectorMenu() {
-        ItemStack arenaIcon;
+        setInventoryIcon("§fPhòng: Solo ", "bw_solo", 8, 9);
+        setInventoryIcon("§fPhòng: Duo ", "bw_duo", 16, 18);
+        setInventoryIcon("§fPhòng: Squad ", "bw_squad", 16, 27);
         ItemMeta meta;
-        for (int i = 1; i <= 8; i++) {
-            final Arena arena = Util.getArena("bw_solo" + i);
-            if (arena == null || arena.getStatus() == Arena.ArenaStatus.Stopped) {
-                arenaIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 15);
-                meta = arenaIcon.getItemMeta();
-                meta.setLore(Arrays.asList("§fMap: ???", "§fTrạng thái: Dừng hoạt động", "§fNgười chơi: 0/8"));
-            }
-            else {
-                if (arena.getStatus() == Arena.ArenaStatus.Running || arena.getStatus() == Arena.ArenaStatus.Reseting)
-                    arenaIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 14);
-                else {
-                    arenaIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 5);
-                    if (arena.getPlayers() == 0) {
-                        arenaIcon.setAmount(1);
-                    }
-                    else {
-                        if (arena.getPlayers() > 4)
-                            arenaIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 4);
-                        arenaIcon.setAmount(arena.getPlayers());
-                        arenaIcon.addEnchantment(Enchantment.DAMAGE_ALL, 1);
-                    }
-                }
-                meta = arenaIcon.getItemMeta();
-                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                meta.setLore(arena.getLore());
-            }
-            meta.setDisplayName("§fPhòng: Solo " + i);
-            arenaIcon.setItemMeta(meta);
-            inventory.setItem(i + 9, arenaIcon);
-        }
-        for (int i = 1; i <= 8; i++) {
-            final Arena arena = Util.getArena("bw_duo" + i);
-            if (arena == null) {
-                arenaIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 15);
-                meta = arenaIcon.getItemMeta();
-                meta.setLore(Arrays.asList("§fMap: ???", "§fTrạng thái: Dừng hoạt động", "§fNgười chơi: 0/16"));
-            }
-            else {
-                if (arena.getStatus() == Arena.ArenaStatus.Running || arena.getStatus() == Arena.ArenaStatus.Reseting)
-                    arenaIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 14);
-                else {
-                    arenaIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 5);
-                    if (arena.getPlayers() == 0) {
-                        arenaIcon.setAmount(1);
-                    }
-                    else {
-                        if (arena.getPlayers() > 4)
-                            arenaIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 4);
-                        arenaIcon.setAmount(arena.getPlayers());
-                        arenaIcon.addEnchantment(Enchantment.DAMAGE_ALL, 1);
-                    }
-                }
-                meta = arenaIcon.getItemMeta();
-                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                meta.setLore(arena.getLore());
-            }
-            meta.setDisplayName("§fPhòng: Duo " + i);
-            arenaIcon.setItemMeta(meta);
-            inventory.setItem(i + 18, arenaIcon);
-        }
-        for (int i = 1; i <= 8; i++) {
-            final Arena arena = Util.getArena("bw_squad" + i);
-            if (arena == null) {
-                arenaIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 15);
-                meta = arenaIcon.getItemMeta();
-                meta.setLore(Arrays.asList("§fMap: ???", "§fTrạng thái: Dừng hoạt động", "§fNgười chơi: 0/16"));
-            }
-            else {
-                if (arena.getStatus() == Arena.ArenaStatus.Running || arena.getStatus() == Arena.ArenaStatus.Reseting)
-                    arenaIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 14);
-                else {
-                    arenaIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 5);
-                    if (arena.getPlayers() == 0) {
-                        arenaIcon.setAmount(1);
-                    }
-                    else {
-                        if (arena.getPlayers() > 4)
-                            arenaIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 4);
-                        arenaIcon.setAmount(arena.getPlayers());
-                        arenaIcon.addEnchantment(Enchantment.DAMAGE_ALL, 1);
-                    }
-                }
-                meta = arenaIcon.getItemMeta();
-                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                meta.setLore(arena.getLore());
-            }
-            meta.setDisplayName("§fPhòng: Squad " + i);
-            arenaIcon.setItemMeta(meta);
-            inventory.setItem(i + 27, arenaIcon);
-        }
         final ItemStack special = new ItemStack(Material.DIAMOND_SWORD);
         meta = special.getItemMeta();
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
@@ -125,6 +37,43 @@ public class SelectorMenu implements InventoryHolder {
         meta.setLore(Arrays.asList("§fClick để tự động tìm phòng", "§fngẫu nhiên."));
         auto.setItemMeta(meta);
         inventory.setItem(41, auto);
+    }
+
+    private void setInventoryIcon(final String iconName, final String arenaType, final int maxPlayers, final int slot) {
+        ItemStack arenaIcon;
+        ItemMeta meta;
+        for (int i = 1; i <= 8; i++) {
+            final Arena arena = Util.getArena(arenaType + i);
+            if (arena == null) {
+                arenaIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 15);
+                meta = arenaIcon.getItemMeta();
+                meta.setLore(Arrays.asList("§fMap: ???", "§fTrạng thái: Dừng hoạt động", "§fNgười chơi: 0/16"));
+            }
+            else {
+                if (arena.getStatus() == Arena.ArenaStatus.Running || arena.getStatus() == Arena.ArenaStatus.Reseting) {
+                    arenaIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 14);
+                    meta = arenaIcon.getItemMeta();
+                }
+                else {
+                    arenaIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 5);
+                    meta = arenaIcon.getItemMeta();
+                    if (arena.getPlayers() == 0) {
+                        arenaIcon.setAmount(1);
+                    }
+                    else {
+                        if (arena.getPlayers() > maxPlayers / 2)
+                            arenaIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 4);
+                        arenaIcon.setAmount(arena.getPlayers());
+                        meta.addEnchant(Enchantment.DAMAGE_ALL, 1, true);
+                        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                    }
+                }
+                meta.setLore(arena.getLore());
+            }
+            meta.setDisplayName(iconName + i);
+            arenaIcon.setItemMeta(meta);
+            inventory.setItem(i + slot, arenaIcon);
+        }
     }
 
     @Override
