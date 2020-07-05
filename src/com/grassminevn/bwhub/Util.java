@@ -31,8 +31,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Pattern;
 
@@ -46,8 +47,8 @@ public class Util {
     public static final boolean config_signAntispam = true;
     public static final double config_antispamDelay = 1.0;
     public static String config_subchannel = "lobby";
-    public static final Collection<Channel> channels = new ArrayList<>();
-    public static final Collection<Arena> arenas = new ArrayList<>();
+    public static final Map<String, Channel> channels = new ConcurrentHashMap<>();
+    public static final Map<String, Arena> arenas = new ConcurrentHashMap<>();
 
     public static void checkMainDirs() {
         final File dir = BedwarsHub.plugin.getDataFolder();
@@ -57,12 +58,12 @@ public class Util {
     }
 
     public static void removeArena(final Arena arena) {
-        arenas.remove(arena);
+        arenas.remove(arena.getName(), arena);
         Events.updateView();
     }
 
     public static void addArena(final Arena arena) {
-        arenas.add(arena);
+        arenas.put(arena.getName(), arena);
         Events.updateView();
     }
 
@@ -70,23 +71,17 @@ public class Util {
         if (name == null) {
             return null;
         }
-        for (final Arena arena : arenas) {
-            if (!arena.getName().equalsIgnoreCase(name)) continue;
-            return arena;
-        }
-        return null;
+        return arenas.get(name);
     }
 
     public static Channel getChannel(final String name) {
-        for (final Channel channel : channels) {
-            if (!channel.getName().equalsIgnoreCase(name)) continue;
-            return channel;
-        }
-        return null;
+        if (name == null)
+            return null;
+        return channels.get(name);
     }
 
     public static Channel getChannel(final InetAddress address, final int port) {
-        for (final Channel channel : channels) {
+        for (final Channel channel : channels.values()) {
             if (!channel.getInetAddress().getHostAddress().equals(address.getHostAddress()) || channel.getPort() != port) continue;
             return channel;
         }
@@ -112,7 +107,7 @@ public class Util {
 
     public static void autoJoin(final Player player, final String mode) {
         final ArrayList<Arena> goodArenas = new ArrayList<>();
-        for (final Arena a : Util.arenas) {
+        for (final Arena a : arenas.values()) {
             if (a.hideFromAutoSign()) continue;
             if (!a.getName().startsWith(mode)) continue;
             if (goodArenas.isEmpty()) {

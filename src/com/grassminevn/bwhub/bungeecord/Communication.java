@@ -28,13 +28,13 @@ public class Communication {
                     if (Util.getChannel(packet.getChannelName()) != null) {
                         channel = Util.getChannel(packet.getChannelName());
                         if (bigPacket.getAddress().getHostAddress().equals(Objects.requireNonNull(channel).getInetAddress().getHostAddress())) {
-                            Util.channels.remove(channel);
+                            Util.channels.remove(channel.getName());
                         } else {
                             return;
                         }
                     }
                     channel = new Channel(packet.getChannelName(), bigPacket.getAddress(), bigPacket.getPort());
-                    Util.channels.add(channel);
+                    Util.channels.put(channel.getName(), channel);
                     Util.sendPacket(new PacketChannelEnabled(Util.config_subchannel), channel);
                     return;
                 }

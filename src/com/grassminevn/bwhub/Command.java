@@ -91,7 +91,7 @@ implements CommandExecutor {
             case "list": {
                 final StringBuilder str = new StringBuilder();
                 int i = 1;
-                for (final Arena a : Util.arenas) {
+                for (final Arena a : Util.arenas.values()) {
                     if (i != Util.arenas.size()) {
                         str.append(a.getName()).append(", ");
                         continue;
