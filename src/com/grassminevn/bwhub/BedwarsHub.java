@@ -56,7 +56,7 @@ extends JavaPlugin {
                         final Socket client = socket.accept();
                         final DataInputStream dis = new DataInputStream(client.getInputStream());
                         final String data = dis.readUTF();
-                        Communication.onPacketReceived(data, client);
+                        Communication.onPacketReceived(data);
                         dis.close();
                     } catch (final IOException e) {
                         e.printStackTrace();

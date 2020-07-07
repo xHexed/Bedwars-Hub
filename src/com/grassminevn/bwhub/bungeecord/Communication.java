@@ -11,19 +11,21 @@ import com.grassminevn.bwhub.Util;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.Socket;
 
 public class Communication {
-    public static void onPacketReceived(final String msg, final Socket socket) {
+    public static void onPacketReceived(final String msg) {
         final String[] data = msg.split(":");
         switch (data[0].toLowerCase()) {
             case "enable":
                 Util.addArena(new Arena(data[1], data[2], Integer.parseInt(data[3])));
                 try {
-                    final DataOutputStream ds = new DataOutputStream(socket.getOutputStream());
+                    final Socket sendSocket = new Socket(InetAddress.getLocalHost(), Integer.parseInt(data[4]));
+                    final DataOutputStream ds = new DataOutputStream(sendSocket.getOutputStream());
                     ds.writeUTF("ok");
                     ds.close();
-                    socket.close();
+                    sendSocket.close();
                 }
                 catch (final IOException e) {
                     e.printStackTrace();
