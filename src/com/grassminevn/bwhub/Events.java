@@ -82,7 +82,7 @@ public class Events implements Listener {
                     final String autoMode = getMode(slot);
                     Util.autoJoin(player, autoMode);
                 } else
-                    arena.getChannel().connect(player, arena);
+                    Util.connect(player, arena);
             } else {
                 player.sendMessage(Language.Only_BetaMember.getMessage());
             }
@@ -121,14 +121,10 @@ public class Events implements Listener {
         return slot == 9 || slot == 18 || slot == 27;
     }
 
-    private static void updateViewArena() {
+    public static void updateView() {
         for (final UUID uuid : viewingArenas) {
             Bukkit.getPlayer(uuid).openInventory(new SelectorMenu().getInventory());
         }
-    }
-
-    public static void updateView() {
-        updateViewArena();
     }
 }
 

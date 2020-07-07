@@ -16,11 +16,6 @@
  */
 package com.grassminevn.bwhub;
 
-import com.grassminevn.bwhub.bungeecord.Channel;
-import com.grassminevn.bwhub.bungeecord.JobManager;
-import com.grassminevn.bwhub.bungeecord.JobStatus;
-import com.grassminevn.bwhub.bungeecord.Packet;
-import com.grassminevn.bwhub.bungeecord.out.PacketConnectPlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permissible;
@@ -29,25 +24,19 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.regex.Pattern;
 
 public class Util {
     private static final Random random = ThreadLocalRandom.current();
-    public static final Pattern SLASH = Pattern.compile("/", Pattern.LITERAL);
-    public static final Pattern KEYSLASH = Pattern.compile("&sKEYslash;", Pattern.LITERAL);
     public static boolean config_beta;
     public static String config_lobbyVillagerPrefix = ChatColor.GOLD + "Bedwars " + ChatColor.YELLOW;
-    public static final boolean config_spectator = true;
     public static final boolean config_signAntispam = true;
     public static final double config_antispamDelay = 1.0;
     public static String config_subchannel = "lobby";
-    public static final Map<String, Channel> channels = new ConcurrentHashMap<>();
     public static final Map<String, Arena> arenas = new ConcurrentHashMap<>();
 
     public static void checkMainDirs() {
@@ -57,8 +46,8 @@ public class Util {
         }
     }
 
-    public static void removeArena(final Arena arena) {
-        arenas.remove(arena.getName(), arena);
+    public static void removeArena(final String arena) {
+        arenas.remove(arena);
         Events.updateView();
     }
 
@@ -72,30 +61,6 @@ public class Util {
             return null;
         }
         return arenas.get(name);
-    }
-
-    public static Channel getChannel(final String name) {
-        if (name == null)
-            return null;
-        return channels.get(name);
-    }
-
-    public static Channel getChannel(final InetAddress address, final int port) {
-        for (final Channel channel : channels.values()) {
-            if (!channel.getInetAddress().getHostAddress().equals(address.getHostAddress()) || channel.getPort() != port) continue;
-            return channel;
-        }
-        return null;
-    }
-
-    public static boolean isInteger(final String str) {
-        try {
-            Integer.valueOf(str);
-            return true;
-        }
-        catch (final Exception e) {
-            return false;
-        }
     }
 
     public static boolean hasPermission(final Permissible sender, final Permission permission) {
@@ -131,7 +96,6 @@ public class Util {
 
     public static void connect(final Player player, final Arena arena) {
         player.sendMessage(Language.JoinMessage_connecting.getMessage());
-        sendPacket(new PacketConnectPlayer(player.getUniqueId(), arena), arena.getChannel());
         final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         final DataOutputStream out = new DataOutputStream(bytes);
         try {
@@ -146,10 +110,6 @@ public class Util {
         catch (final IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public static void sendPacket(final Packet packet, final Channel channel) {
-        JobManager.addJob(new JobStatus(packet, channel));
     }
 
     private static Boolean hasPermission(final Permissible player, final String perm) {

@@ -37,21 +37,20 @@ implements CommandExecutor {
     private static final Pattern ARENA = Pattern.compile("\\{arena}");
 
     public boolean onCommand(final CommandSender sender, final org.bukkit.command.Command cmd, final String label, final String[] args) {
-        if (!cmd(sender, label, args)) {
-            final Collection<String> cmds = new ArrayList<>();
-            addIfHasPermission(cmds, sender, Permission.Command_List, "/" + label + " join <arena name>");
-            addIfHasPermission(cmds, sender, Permission.Command_List, "/" + label + " auto [solo/duo/squad]");
-            addIfHasPermission(cmds, sender, Permission.Command_List, "/" + label + " list");
-            addIfHasPermission(cmds, sender, Permission.Command_Info, "/" + label + " info");
-            addIfHasPermission(cmds, sender, Permission.Reload, "/" + label + " reload");
-            if (cmds.size() >= 1) {
-                sender.sendMessage(Language.All_Commands.getMessage());
-                for (final String usage : cmds) {
-                    sender.sendMessage(ChatColor.AQUA + usage);
-                }
-            } else {
-                sender.sendMessage(Language.No_Permissions.getMessage());
+        if (cmd(sender, label, args)) return true;
+        final Collection<String> cmds = new ArrayList<>();
+        addIfHasPermission(cmds, sender, Permission.Command_List, "/" + label + " join <arena name>");
+        addIfHasPermission(cmds, sender, Permission.Command_List, "/" + label + " auto [solo/duo/squad]");
+        addIfHasPermission(cmds, sender, Permission.Command_List, "/" + label + " list");
+        addIfHasPermission(cmds, sender, Permission.Command_Info, "/" + label + " info");
+        addIfHasPermission(cmds, sender, Permission.Reload, "/" + label + " reload");
+        if (cmds.size() >= 1) {
+            sender.sendMessage(Language.All_Commands.getMessage());
+            for (final String usage : cmds) {
+                sender.sendMessage(ChatColor.AQUA + usage);
             }
+        } else {
+            sender.sendMessage(Language.No_Permissions.getMessage());
         }
         return true;
     }
@@ -65,7 +64,7 @@ implements CommandExecutor {
                         final Player player = (Player)sender;
                         final Arena arena = Util.getArena(args[1]);
                         if (arena != null) {
-                            arena.getChannel().connect(player, arena);
+                            Util.connect(player, arena);
                         } else {
                             player.sendMessage(ARENA.matcher(Language.NotFound_Arena.getMessage()).replaceAll(Matcher.quoteReplacement(args[1])));
                         }

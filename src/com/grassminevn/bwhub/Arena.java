@@ -7,57 +7,24 @@
  */
 package com.grassminevn.bwhub;
 
-import com.grassminevn.bwhub.bungeecord.Channel;
-import org.bukkit.inventory.ItemStack;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class Arena {
-    private final Channel channel;
-    private String name;
-    private String madeBy;
+    private final String name;
+    private final String madeBy;
     private int players;
-    private int maxPlayers;
-    private final int teams;
-    private int inTeamPlayers;
-    private ItemStack icon;
-    private ArenaStatus status;
+    private final int maxPlayers;
+    private ArenaStatus status = ArenaStatus.Lobby;
 
-    public Arena(final Channel channel, final String name, final String madeBy, final int players, final int maxPlayers, final ItemStack icon, final ArenaStatus status, final int teams, final int inTeamPlayers) {
-        this.channel = channel;
+    public Arena(final String name, final String madeBy, final int maxPlayers) {
         this.name = name;
         this.madeBy = madeBy;
-        this.players = players;
         this.maxPlayers = maxPlayers;
-        this.icon = icon;
-        this.status = status;
-        this.teams = teams;
-        this.inTeamPlayers = inTeamPlayers;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
-        Events.updateView();
-    }
-
-    public void setMadeBy(final String madeBy) {
-        this.madeBy = madeBy;
-        Events.updateView();
     }
 
     public void setPlayers(final int players) {
         this.players = players;
-        Events.updateView();
-    }
-
-    public void setMaxPlayers(final int maxPlayers) {
-        this.maxPlayers = maxPlayers;
-        Events.updateView();
-    }
-
-    public void setIcon(final ItemStack icon) {
-        this.icon = icon;
         Events.updateView();
     }
 
@@ -66,44 +33,16 @@ public class Arena {
         Events.updateView();
     }
 
-    public void setInTeamPlayers(final int inTeamPlayers) {
-        this.inTeamPlayers = inTeamPlayers;
-    }
-
-    public Channel getChannel() {
-        return channel;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public String getMadeBy() {
-        return madeBy;
     }
 
     public int getPlayers() {
         return players;
     }
 
-    public int getMaxPlayers() {
-        return maxPlayers;
-    }
-
-    public ItemStack getIcon() {
-        return icon;
-    }
-
     public ArenaStatus getStatus() {
         return status;
-    }
-
-    public int getTeams() {
-        return teams;
-    }
-
-    public int getInTeamPlayers() {
-        return inTeamPlayers;
     }
 
     public List<String> getLore() {
@@ -127,30 +66,11 @@ public class Arena {
     }
 
     public enum ArenaStatus {
-        Stopped(1),
-        Lobby(2),
-        Running(3),
-        Reseting(4),
-        EndLobby(5);
-        
-        private final int selected_id;
-
-        ArenaStatus(final int id) {
-            selected_id = id;
-        }
-
-        public int getID() {
-            return selected_id;
-        }
-        
-        public static ArenaStatus fromInt(final String type) {
-            final int value = Integer.parseInt(type);
-            for (final ArenaStatus id : ArenaStatus.values()) {
-                if (value == id.selected_id)
-                    return id;
-            }
-            return null;
-        }
+        Stopped(),
+        Lobby(),
+        Running(),
+        Reseting(),
+        EndLobby()
     }
 }
 
