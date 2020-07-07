@@ -37,9 +37,6 @@ extends JavaPlugin {
         plugin = this;
         final CommandExecutor cmd = new Command();
         getCommand("bw").setExecutor(cmd);
-        getCommand("bedwars").setExecutor(cmd);
-        getCommand("mbedwars").setExecutor(cmd);
-        getCommand("bwbc").setExecutor(cmd);
         Bukkit.getServer().getPluginManager().registerEvents(new Events(), this);
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         LanguageConfig.load();

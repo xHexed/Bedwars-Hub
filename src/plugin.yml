@@ -8,17 +8,9 @@ commands:
   bw:
     description: Bedwars is a minigame
     usage: /bw
-  bedwars:
-    description: The same as /bw
-    usage: /bedwars
-  mbedwars:
-    description: The same as /bw
-    usage: /mbedwars
-  bwbc:
-    description: The same as /bw
-    usage: /mbedwars
+    aliases: [bedwars, bedwar]
 permissions:
-  bw_*:
+  bw.*:
     default: op
     children:
     - bw_summon
@@ -26,13 +18,13 @@ permissions:
     - bw_info
     - bw_join
     - bw_beta
-  bw_summon:
+  bw.summon:
     default: op
-  bw_list:
+  bw.list:
     default: op
-  bw_info:
+  bw.info:
     default: op
-  bw_join:
+  bw.join:
     default: op
-  bw_beta:
+  bw.beta:
     default: op
