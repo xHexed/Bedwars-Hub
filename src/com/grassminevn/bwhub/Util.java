@@ -47,11 +47,13 @@ public class Util {
     }
 
     public static void removeArena(final String arena) {
+        System.out.println("Trying to remove arena " + arena);
         arenas.remove(arena);
         Events.updateView();
     }
 
     public static void addArena(final Arena arena) {
+        System.out.println("Added arena " + arena.getName());
         arenas.put(arena.getName(), arena);
         Events.updateView();
     }

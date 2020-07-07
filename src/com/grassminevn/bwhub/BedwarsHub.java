@@ -44,6 +44,7 @@ extends JavaPlugin {
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         LanguageConfig.load();
         Config.load();
+
         try {
             socket = new ServerSocket(2);
         } catch (final IOException e) {

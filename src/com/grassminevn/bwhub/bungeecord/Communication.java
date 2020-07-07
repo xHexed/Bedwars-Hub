@@ -18,7 +18,7 @@ public class Communication {
         final String[] data = msg.split(":");
         switch (data[0].toLowerCase()) {
             case "enable":
-                Util.addArena(new Arena(data[1], data[3], Integer.parseInt(data[2])));
+                Util.addArena(new Arena(data[1], data[2], Integer.parseInt(data[3])));
                 try {
                     final DataOutputStream ds = new DataOutputStream(socket.getOutputStream());
                     ds.writeUTF("ok");
@@ -61,7 +61,7 @@ public class Communication {
             case "update": {
                 Arena arena = Util.getArena(data[1]);
                 if (arena == null) {
-                    arena = new Arena(data[1], data[3], Integer.parseInt(data[4]));
+                    arena = new Arena(data[1], data[4], Integer.parseInt(data[5]));
                     Util.addArena(arena);
                 }
                 arena.setStatus(Arena.ArenaStatus.valueOf(data[2]));
