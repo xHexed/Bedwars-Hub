@@ -28,8 +28,8 @@ public class SelectorMenu implements InventoryHolder {
         meta.setDisplayName("§fPhòng đặc biệt (Comming soon...)");
         meta.setLore(Collections.singletonList("§fClick để xem các phòng đặc biệt."));
         special.setItemMeta(meta);
-
         inventory.setItem(39, special);
+
         final ItemStack auto = new ItemStack(Material.NETHER_STAR);
         meta = auto.getItemMeta();
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
@@ -37,6 +37,23 @@ public class SelectorMenu implements InventoryHolder {
         meta.setLore(Arrays.asList("§fClick để tự động tìm phòng", "§fngẫu nhiên."));
         auto.setItemMeta(meta);
         inventory.setItem(41, auto);
+
+        meta.setDisplayName("§fTự động tìm phòng solo");
+        meta.setLore(Arrays.asList("§fClick để tự động tìm phòng", "§fsolo ngẫu nhiên."));
+        auto.setItemMeta(meta);
+        inventory.setItem(9, auto);
+
+        meta.setDisplayName("§fTự động tìm phòng duo");
+        meta.setLore(Arrays.asList("§fClick để tự động tìm phòng", "§fduo ngẫu nhiên."));
+        auto.setItemMeta(meta);
+        auto.setAmount(2);
+        inventory.setItem(18, auto);
+
+        meta.setDisplayName("§fTự động tìm phòng squad");
+        meta.setLore(Arrays.asList("§fClick để tự động tìm phòng", "§fsquad ngẫu nhiên."));
+        auto.setItemMeta(meta);
+        auto.setAmount(4);
+        inventory.setItem(27, auto);
     }
 
     private void setInventoryIcon(final String iconName, final String arenaType, final int maxPlayers, final int slot) {
