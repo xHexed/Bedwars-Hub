@@ -60,7 +60,7 @@ extends JavaPlugin {
                         dis.close();
                     }
                     catch (final Exception e) {
-                        if (!e.getMessage().contains("CancelledPacketHandleException"))
+                        if (!e.toString().contains("CancelledPacketHandleException"))
                             e.printStackTrace();
                         run();
                     }
