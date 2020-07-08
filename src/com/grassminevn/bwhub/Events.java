@@ -46,20 +46,21 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.Inventory;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Events implements Listener {
-    private static final Set<UUID> antispam = new HashSet<>();
-    private static final Collection<UUID> viewingArenas = new HashSet<>();
+    private static final Set<UUID> cooldown = new HashSet<>();
+    private static final Collection<UUID> viewers = ConcurrentHashMap.newKeySet();
 
     @EventHandler
     public void onInventoryOpenEvent(final InventoryOpenEvent event) {
         if (!(event.getInventory().getHolder() instanceof SelectorMenu)) return;
-        viewingArenas.add(event.getPlayer().getUniqueId());
+        viewers.add(event.getPlayer().getUniqueId());
     }
 
     @EventHandler
     public void onInventoryCloseEvent(final InventoryCloseEvent event) {
-        viewingArenas.remove(event.getPlayer().getUniqueId());
+        viewers.remove(event.getPlayer().getUniqueId());
     }
 
     @EventHandler
@@ -75,7 +76,7 @@ public class Events implements Listener {
         if (isArenaClicked(slot)) {
             final Arena arena = Util.getArena(getMode(slot) + getArenaNumber(slot));
             if (arena == null) return;
-            if (antispam.contains(player.getUniqueId()))
+            if (cooldown.contains(player.getUniqueId()))
                 return;
             if (!Util.config_beta || Util.hasPermission(player, Permission.BetaUser)) {
                 if (isAutoJoin(slot)) {
@@ -87,8 +88,8 @@ public class Events implements Listener {
                 player.sendMessage(Language.Only_BetaMember.getMessage());
             }
             if (Util.config_signAntispam) {
-                antispam.add(player.getUniqueId());
-                Bukkit.getScheduler().runTaskLater(BedwarsHub.plugin, () -> antispam.remove(player.getUniqueId()), (int) (Util.config_antispamDelay * 20));
+                cooldown.add(player.getUniqueId());
+                Bukkit.getScheduler().runTaskLater(BedwarsHub.plugin, () -> cooldown.remove(player.getUniqueId()), (int) (Util.config_antispamDelay * 20));
             }
         }
     }
@@ -122,9 +123,11 @@ public class Events implements Listener {
     }
 
     public static void updateView() {
-        for (final UUID uuid : viewingArenas) {
-            Bukkit.getPlayer(uuid).openInventory(new SelectorMenu().getInventory());
-        }
+        Bukkit.getScheduler().runTask(BedwarsHub.plugin, () -> {
+            for (final UUID uuid : viewers) {
+                Bukkit.getPlayer(uuid).openInventory(new SelectorMenu().getInventory());
+            }
+        });
     }
 }
 
