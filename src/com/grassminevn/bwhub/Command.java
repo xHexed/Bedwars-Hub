@@ -39,10 +39,10 @@ implements CommandExecutor {
     public boolean onCommand(final CommandSender sender, final org.bukkit.command.Command cmd, final String label, final String[] args) {
         if (cmd(sender, label, args)) return true;
         final Collection<String> cmds = new ArrayList<>();
-        addIfHasPermission(cmds, sender, Permission.Command_List, "/" + label + " join <arena name>");
+        addIfHasPermission(cmds, sender, Permission.Command_List, "/" + label + " join <arena>");
         addIfHasPermission(cmds, sender, Permission.Command_List, "/" + label + " auto [solo/duo/squad]");
         addIfHasPermission(cmds, sender, Permission.Command_List, "/" + label + " list");
-        addIfHasPermission(cmds, sender, Permission.Command_Info, "/" + label + " info");
+        addIfHasPermission(cmds, sender, Permission.Command_Info, "/" + label + " info <arena>");
         addIfHasPermission(cmds, sender, Permission.Reload, "/" + label + " reload");
         if (cmds.size() >= 1) {
             sender.sendMessage(Language.All_Commands.getMessage());
@@ -113,6 +113,14 @@ implements CommandExecutor {
             case "reload": {
                 LanguageConfig.load();
                 Config.load();
+                sender.sendMessage("Reload");
+                return true;
+            }
+            case "info": {
+                if (args.length < 2) return false;
+                final Arena arena = Util.getArena(args[2].toLowerCase());
+                sender.sendMessage(arena.getName() + ": " + arena.getStatus().name() + " " + arena.getPlayers() + " ");
+                return true;
             }
         }
         return false;
