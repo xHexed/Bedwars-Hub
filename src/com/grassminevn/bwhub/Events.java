@@ -78,7 +78,7 @@ public class Events implements Listener {
             if (arena == null) return;
             if (cooldown.contains(player.getUniqueId()))
                 return;
-            if (!Util.config_beta || Util.hasPermission(player, Permission.BetaUser)) {
+            if (!Util.config_beta || player.hasPermission(Permission.BetaUser.getPermission())) {
                 if (isAutoJoin(slot)) {
                     final String autoMode = getMode(slot);
                     Util.autoJoin(player, autoMode);

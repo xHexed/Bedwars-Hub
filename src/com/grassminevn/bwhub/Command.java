@@ -127,7 +127,7 @@ implements CommandExecutor {
     }
 
     private void addIfHasPermission(final Collection<String> cmds, final Permissible sender, final Permission perm, final String usage) {
-        if (Util.hasPermission(sender, perm)) {
+        if (sender.hasPermission(perm.getPermission())) {
             cmds.add(usage);
         }
     }
