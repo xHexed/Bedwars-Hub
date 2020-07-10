@@ -118,8 +118,8 @@ implements CommandExecutor {
             }
             case "info": {
                 if (args.length < 2) return false;
-                final Arena arena = Util.getArena(args[2].toLowerCase());
-                sender.sendMessage(arena.getName() + ": " + arena.getStatus().name() + " " + arena.getPlayers() + " ");
+                final Arena arena = Util.getArena(args[1].toLowerCase());
+                sender.sendMessage(arena.getName() + ": " + arena.getStatus().name() + " " + arena.getPlayers() + "/" + arena.getMaxPlayers());
                 return true;
             }
         }

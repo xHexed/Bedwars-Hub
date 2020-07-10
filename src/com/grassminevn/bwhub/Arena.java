@@ -42,6 +42,10 @@ public class Arena {
         return players;
     }
 
+    public int getMaxPlayers() {
+        return maxPlayers;
+    }
+
     public ArenaStatus getStatus() {
         return status;
     }
