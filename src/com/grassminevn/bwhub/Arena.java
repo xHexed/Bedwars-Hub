@@ -30,6 +30,7 @@ public class Arena {
 
     public void setStatus(final ArenaStatus status) {
         this.status = status;
+        System.out.println("Updated status to " + status.name());
         Events.updateView();
     }
 
