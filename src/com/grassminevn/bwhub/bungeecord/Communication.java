@@ -41,7 +41,7 @@ public class Communication {
                     return;
                 }
                 else {
-                    arena.setPlayers(arena.getPlayers() - 1);
+                    arena.setPlayers(Integer.parseInt(data[3]));
                 }
                 return;
             }
