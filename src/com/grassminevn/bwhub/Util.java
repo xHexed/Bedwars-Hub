@@ -53,6 +53,7 @@ public class Util {
     }
 
     public static void addArena(final Arena arena) {
+        if (arenas.containsKey(arena.getName())) return;
         System.out.println("Added arena " + arena.getName());
         arenas.put(arena.getName(), arena);
         Events.updateView();
