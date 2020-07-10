@@ -64,7 +64,7 @@ public class SelectorMenu implements InventoryHolder {
             if (arena == null) {
                 arenaIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 15);
                 meta = arenaIcon.getItemMeta();
-                meta.setLore(Arrays.asList("§fMap: ???", "§fTrạng thái: Dừng hoạt động", "§fNgười chơi: 0/16"));
+                meta.setLore(Arrays.asList("§fMap: ???", "§fTrạng thái: Dừng hoạt động", "§fNgười chơi: 0/" + maxPlayers));
             }
             else {
                 if (arena.getStatus() == Arena.ArenaStatus.Running || arena.getStatus() == Arena.ArenaStatus.Reseting) {
@@ -74,7 +74,7 @@ public class SelectorMenu implements InventoryHolder {
                 else {
                     arenaIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 5);
                     meta = arenaIcon.getItemMeta();
-                    if (arena.getPlayers() == 0) {
+                    if (arena.getPlayers() <= 0) {
                         arenaIcon.setAmount(1);
                     }
                     else {
