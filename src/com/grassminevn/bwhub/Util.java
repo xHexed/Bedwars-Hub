@@ -53,7 +53,7 @@ public class Util {
 
     public static void addArena(final Arena arena) {
         if (arenas.containsKey(arena.getName())) return;
-        System.out.println("Added arena " + arena.getName());
+        System.out.println("Added arena " + arena.getName() + "(" + arena.getMaxPlayers() + ")");
         arenas.put(arena.getName(), arena);
         Events.updateView();
     }
