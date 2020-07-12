@@ -14,7 +14,7 @@ public class Arena {
     private final String name;
     private final String madeBy;
     private int players;
-    private final int maxPlayers;
+    private int maxPlayers;
     private ArenaStatus status = ArenaStatus.Lobby;
 
     public Arena(final String name, final String madeBy, final int maxPlayers) {
@@ -31,6 +31,11 @@ public class Arena {
     public void setStatus(final ArenaStatus status) {
         this.status = status;
         System.out.println("Updated " + name + " status to " + status.name());
+        Events.updateView();
+    }
+
+    public void setMaxPlayers(final int maxPlayers) {
+        this.maxPlayers = maxPlayers;
         Events.updateView();
     }
 

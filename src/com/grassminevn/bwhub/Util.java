@@ -50,7 +50,10 @@ public class Util {
     }
 
     public static void addArena(final Arena arena) {
-        if (arenas.containsKey(arena.getName())) return;
+        if (arenas.containsKey(arena.getName())) {
+            arenas.get(arena.getName()).setMaxPlayers(arena.getMaxPlayers());
+            return;
+        }
         System.out.println("Added arena " + arena.getName() + "(" + arena.getMaxPlayers() + ")");
         arenas.put(arena.getName(), arena);
         Events.updateView();
