@@ -16,7 +16,6 @@
  */
 package com.grassminevn.bwhub;
 
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.io.ByteArrayOutputStream;
@@ -32,7 +31,6 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Util {
     private static final Random random = ThreadLocalRandom.current();
     public static boolean config_beta;
-    public static String config_lobbyVillagerPrefix = ChatColor.GOLD + "Bedwars " + ChatColor.YELLOW;
     public static final boolean config_signAntispam = true;
     public static final double config_antispamDelay = 1.0;
     public static String config_subchannel = "lobby";
