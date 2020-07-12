@@ -30,6 +30,7 @@ public class Arena {
 
     public void setStatus(final ArenaStatus status) {
         this.status = status;
+        System.out.println("Updated " + name + " status to " + status.name());
         Events.updateView();
     }
 
@@ -39,6 +40,10 @@ public class Arena {
 
     public int getPlayers() {
         return players;
+    }
+
+    public int getMaxPlayers() {
+        return maxPlayers;
     }
 
     public ArenaStatus getStatus() {

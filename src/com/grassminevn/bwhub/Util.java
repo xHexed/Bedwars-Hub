@@ -18,7 +18,6 @@ package com.grassminevn.bwhub;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.permissions.Permissible;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -53,7 +52,8 @@ public class Util {
     }
 
     public static void addArena(final Arena arena) {
-        System.out.println("Added arena " + arena.getName());
+        if (arenas.containsKey(arena.getName())) return;
+        System.out.println("Added arena " + arena.getName() + "(" + arena.getMaxPlayers() + ")");
         arenas.put(arena.getName(), arena);
         Events.updateView();
     }
@@ -63,13 +63,6 @@ public class Util {
             return null;
         }
         return arenas.get(name);
-    }
-
-    public static boolean hasPermission(final Permissible sender, final Permission permission) {
-        if (sender instanceof Player) {
-            return hasPermission(sender, permission.getPermission());
-        }
-        return true;
     }
 
     public static void autoJoin(final Player player, final String mode) {
@@ -114,8 +107,5 @@ public class Util {
         }
     }
 
-    private static Boolean hasPermission(final Permissible player, final String perm) {
-        return player.hasPermission(perm);
-    }
 }
 
