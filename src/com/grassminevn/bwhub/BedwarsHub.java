@@ -19,6 +19,7 @@ import com.grassminevn.bwhub.bungeecord.Communication;
 import com.grassminevn.bwhub.config.Config;
 import com.grassminevn.bwhub.config.LanguageConfig;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -27,6 +28,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.LocalTime;
 
 public class BedwarsHub
 extends JavaPlugin {
@@ -67,6 +69,15 @@ extends JavaPlugin {
                 }
             }
         }.start();
+
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
+            final World world = Bukkit.getWorld("world");
+            if (world == null) return;
+            final LocalTime date = LocalTime.now();
+            int time = (int) ((date.getHour() + ((double) date.getMinute() / 60) - 6) * 1000);
+            if (time < 0) time += 24000;
+            world.setTime(time);
+        }, 0, 20);
     }
 
     public void onDisable() {
