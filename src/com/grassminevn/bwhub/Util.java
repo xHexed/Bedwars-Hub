@@ -43,20 +43,36 @@ public class Util {
         }
     }
 
-    public static void removeArena(final String arena) {
-        System.out.println("Trying to remove arena " + arena);
-        arenas.remove(arena);
-        Events.updateView();
+    public static boolean isInteger(final char number) {
+        try {
+            Integer.parseInt(String.valueOf(number));
+        }
+        catch (final NumberFormatException e) {
+            return false;
+        }
+        return true;
     }
 
-    public static void addArena(final Arena arena) {
-        if (arenas.containsKey(arena.getName())) {
-            arenas.get(arena.getName()).setMaxPlayers(arena.getMaxPlayers());
-            return;
+    public static void removeArena(final String arena) {
+        System.out.println("Trying to remove arena " + arena);
+        Events.updateView(arenas.remove(arena));
+    }
+
+    public static Arena addArena(final String name, final String madeBy, final String maxPlayers, final String arenaStatus) {
+        if (arenas.containsKey(name)) {
+            final Arena arena = arenas.get(name);
+            arena.setMaxPlayers(Integer.parseInt(maxPlayers));
+            if (arenaStatus != null)
+                arena.setStatus(Arena.ArenaStatus.valueOf(arenaStatus));
+            return arena;
         }
-        System.out.println("Added arena " + arena.getName() + "(" + arena.getMaxPlayers() + ")");
-        arenas.put(arena.getName(), arena);
-        Events.updateView();
+        System.out.println("Added arena " + name + "(" + maxPlayers + ")");
+        final Arena arena = new Arena(name, madeBy, Integer.parseInt(maxPlayers));
+        if (arenaStatus != null)
+            arena.setStatus(Arena.ArenaStatus.valueOf(arenaStatus));
+        arenas.put(name, arena);
+        Events.updateView(arena);
+        return arena;
     }
 
     public static Arena getArena(final String name) {

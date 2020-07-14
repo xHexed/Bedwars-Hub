@@ -15,12 +15,12 @@ import java.util.Arrays;
 import java.util.Collections;
 
 public class SelectorMenu implements InventoryHolder {
-    private final Inventory inventory = Bukkit.createInventory(this, 54, "Chọn phòng");
+    private static final Inventory inventory = Bukkit.createInventory(new SelectorMenu(), 54, "Chọn phòng");
 
-    public SelectorMenu() {
-        setInventoryIcon("§fPhòng: Solo ", "bw_solo", 8, 9);
-        setInventoryIcon("§fPhòng: Duo ", "bw_duo", 16, 18);
-        setInventoryIcon("§fPhòng: Squad ", "bw_squad", 16, 27);
+    static {
+        setInventoryIcons("§fPhòng: Solo ", "bw_solo", 8, 9);
+        setInventoryIcons("§fPhòng: Duo ", "bw_duo", 16, 18);
+        setInventoryIcons("§fPhòng: Squad ", "bw_squad", 16, 27);
         ItemMeta meta;
         final ItemStack special = new ItemStack(Material.DIAMOND_SWORD);
         meta = special.getItemMeta();
@@ -56,7 +56,56 @@ public class SelectorMenu implements InventoryHolder {
         inventory.setItem(27, auto);
     }
 
-    private void setInventoryIcon(final String iconName, final String arenaType, final int maxPlayers, final int slot) {
+    public static void updateInventoryIcon(final Arena arena) {
+        switch (arena.getArenaType()) {
+            case SOLO: {
+                setInventoryIcon("§fPhòng: Solo " + arena.getArenaNumber(), arena.getName(), arena.getMaxPlayers(), 9 + arena.getArenaNumber());
+            }
+            case DUO: {
+                setInventoryIcon("§fPhòng: Duo " + arena.getArenaNumber(), arena.getName(), arena.getMaxPlayers(), 18 + arena.getArenaNumber());
+            }
+            case SQUAD: {
+                setInventoryIcon("§fPhòng: Squad " + arena.getArenaNumber(), arena.getName(), arena.getMaxPlayers(), 27 + arena.getArenaNumber());
+            }
+        }
+    }
+
+    private static void setInventoryIcon(final String iconName, final String arenaName, final int maxPlayers, final int slot) {
+        ItemStack arenaIcon;
+        final ItemMeta meta;
+        final Arena arena = Util.getArena(arenaName);
+        if (arena == null) {
+            arenaIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 15);
+            meta = arenaIcon.getItemMeta();
+            meta.setLore(Arrays.asList("§fMap: ???", "§fTrạng thái: Dừng hoạt động", "§fNgười chơi: 0/" + maxPlayers));
+        }
+        else {
+            if (arena.getStatus() == Arena.ArenaStatus.Running || arena.getStatus() == Arena.ArenaStatus.Reseting) {
+                arenaIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 14);
+                meta = arenaIcon.getItemMeta();
+            }
+            else {
+                arenaIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 5);
+                meta = arenaIcon.getItemMeta();
+                if (arena.getPlayers() <= 0) {
+                    arenaIcon.setAmount(1);
+                }
+                else {
+                    if (arena.getPlayers() > maxPlayers / 2)
+                        arenaIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 4);
+                    arenaIcon.setAmount(arena.getPlayers());
+                    meta.addEnchant(Enchantment.DAMAGE_ALL, 1, true);
+                    meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                }
+            }
+            meta.setLore(arena.getLore());
+        }
+        meta.setDisplayName(iconName);
+        arenaIcon.setItemMeta(meta);
+        inventory.setItem(slot, arenaIcon);
+    }
+
+    private static void setInventoryIcons(final String iconName, final String arenaType, final int maxPlayers, final int slot) {
         ItemStack arenaIcon;
         ItemMeta meta;
         for (int i = 1; i <= 8; i++) {

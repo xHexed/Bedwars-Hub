@@ -75,13 +75,12 @@ public class Events implements Listener {
         }
         if (isArenaClicked(slot)) {
             final Arena arena = Util.getArena(getMode(slot) + getArenaNumber(slot));
-            if (arena == null) return;
+            if (arena == null || arena.getStatus() != Arena.ArenaStatus.Lobby) return;
             if (cooldown.contains(player.getUniqueId()))
                 return;
             if (!Util.config_beta || player.hasPermission(Permission.BetaUser.getPermission())) {
                 if (isAutoJoin(slot)) {
-                    final String autoMode = getMode(slot);
-                    Util.autoJoin(player, autoMode);
+                    Util.autoJoin(player, getMode(slot));
                 } else
                     Util.connect(player, arena);
             } else {
@@ -122,8 +121,10 @@ public class Events implements Listener {
         return slot == 9 || slot == 18 || slot == 27;
     }
 
-    public static void updateView() {
+    public static void updateView(final Arena arena) {
+        if (arena == null) return;
         Bukkit.getScheduler().runTask(BedwarsHub.plugin, () -> {
+            SelectorMenu.updateInventoryIcon(arena);
             for (final UUID uuid : viewers) {
                 Bukkit.getPlayer(uuid).openInventory(new SelectorMenu().getInventory());
             }

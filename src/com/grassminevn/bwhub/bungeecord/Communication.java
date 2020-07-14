@@ -14,7 +14,7 @@ public class Communication {
         final String[] data = msg.split(":");
         switch (data[0].toLowerCase()) {
             case "enable":
-                Util.addArena(new Arena(data[1], data[2], Integer.parseInt(data[3])));
+                Util.addArena(data[1], data[2], data[3], data[4]);
                 return;
             case "disable":
                 Util.removeArena(data[1]);
@@ -22,8 +22,7 @@ public class Communication {
             case "join": {
                 Arena arena = Util.getArena(data[1]);
                 if (arena == null) {
-                    arena = new Arena(data[1], data[3], Integer.parseInt(data[4]));
-                    Util.addArena(arena);
+                    arena = Util.addArena(data[1], data[3], data[4], null);
                     arena.setPlayers(1);
                     return;
                 }
@@ -35,8 +34,7 @@ public class Communication {
             case "quit": {
                 Arena arena = Util.getArena(data[1]);
                 if (arena == null) {
-                    arena = new Arena(data[1], data[4], Integer.parseInt(data[5]));
-                    Util.addArena(arena);
+                    arena = Util.addArena(data[1], data[4], data[5], null);
                     arena.setPlayers(Integer.parseInt(data[3]));
                     return;
                 }
@@ -48,8 +46,7 @@ public class Communication {
             case "update": {
                 Arena arena = Util.getArena(data[1]);
                 if (arena == null) {
-                    arena = new Arena(data[1], data[4], Integer.parseInt(data[5]));
-                    Util.addArena(arena);
+                    arena = Util.addArena(data[1], data[4], data[5], data[2]);
                 }
                 arena.setStatus(Arena.ArenaStatus.valueOf(data[2]));
             }
