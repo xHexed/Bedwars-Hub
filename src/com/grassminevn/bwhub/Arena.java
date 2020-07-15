@@ -98,8 +98,12 @@ public class Arena {
         return list;
     }
 
-    public boolean hideFromAutoSign() {
-        return players >= maxPlayers || status != ArenaStatus.Lobby;
+    public boolean isJoinable() {
+        return canAutoJoin() || status == ArenaStatus.Running;
+    }
+
+    public boolean canAutoJoin() {
+        return players < maxPlayers || status == ArenaStatus.Lobby;
     }
 
     public ArenaType getArenaType() {

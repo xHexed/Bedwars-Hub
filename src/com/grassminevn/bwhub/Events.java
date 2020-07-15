@@ -75,7 +75,7 @@ public class Events implements Listener {
         }
         if (isArenaClicked(slot)) {
             final Arena arena = Util.getArena(getMode(slot) + getArenaNumber(slot));
-            if (arena == null || arena.getStatus() != Arena.ArenaStatus.Lobby) return;
+            if (arena == null || arena.isJoinable()) return;
             if (cooldown.contains(player.getUniqueId()))
                 return;
             if (!Util.config_beta || player.hasPermission(Permission.BetaUser.getPermission())) {

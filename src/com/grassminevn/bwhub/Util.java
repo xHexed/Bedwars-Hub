@@ -85,8 +85,7 @@ public class Util {
     public static void autoJoin(final Player player, final String mode) {
         final ArrayList<Arena> goodArenas = new ArrayList<>();
         for (final Arena a : arenas.values()) {
-            if (a.hideFromAutoSign()) continue;
-            if (!a.getName().startsWith(mode)) continue;
+            if (a.canAutoJoin() || !a.getName().startsWith(mode)) continue;
             if (goodArenas.isEmpty()) {
                 goodArenas.add(a);
                 continue;
