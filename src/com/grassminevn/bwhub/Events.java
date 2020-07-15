@@ -73,23 +73,22 @@ public class Events implements Listener {
         if (slot == 41) {
             Util.autoJoin(player, "");
         }
-        if (isArenaClicked(slot)) {
-            final Arena arena = Util.getArena(getMode(slot) + getArenaNumber(slot));
-            if (arena == null || arena.isJoinable()) return;
-            if (cooldown.contains(player.getUniqueId()))
-                return;
-            if (!Util.config_beta || player.hasPermission(Permission.BetaUser.getPermission())) {
-                if (isAutoJoin(slot)) {
-                    Util.autoJoin(player, getMode(slot));
-                } else
-                    Util.connect(player, arena);
-            } else {
-                player.sendMessage(Language.Only_BetaMember.getMessage());
-            }
-            if (Util.config_signAntispam) {
-                cooldown.add(player.getUniqueId());
-                Bukkit.getScheduler().runTaskLater(BedwarsHub.plugin, () -> cooldown.remove(player.getUniqueId()), (int) (Util.config_antispamDelay * 20));
-            }
+        if (!isArenaClicked(slot)) return;
+        final Arena arena = Util.getArena(getMode(slot) + getArenaNumber(slot));
+        if (arena == null || !arena.isJoinable()) return;
+        if (cooldown.contains(player.getUniqueId()))
+            return;
+        if (!Util.config_beta || player.hasPermission(Permission.BetaUser.getPermission())) {
+            if (isAutoJoin(slot)) {
+                Util.autoJoin(player, getMode(slot));
+            } else
+                Util.connect(player, arena);
+        } else {
+            player.sendMessage(Language.Only_BetaMember.getMessage());
+        }
+        if (Util.config_signAntispam) {
+            cooldown.add(player.getUniqueId());
+            Bukkit.getScheduler().runTaskLater(BedwarsHub.plugin, () -> cooldown.remove(player.getUniqueId()), (int) (Util.config_antispamDelay * 20));
         }
     }
 
