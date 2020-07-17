@@ -122,10 +122,23 @@ public class Events implements Listener {
 
     public static void updateView(final Arena arena) {
         if (arena == null) return;
+        final int slot;
+        switch (arena.getArenaType()) {
+            case SOLO:
+                slot = 9 + arena.getArenaNumber();
+                break;
+            case DUO:
+                slot = 18 + arena.getArenaNumber();
+                break;
+            case SQUAD:
+                slot = 27 + arena.getArenaNumber();
+                break;
+            default:
+                return;
+        }
         Bukkit.getScheduler().runTask(BedwarsHub.plugin, () -> {
-            SelectorMenu.updateInventoryIcon(arena);
             for (final UUID uuid : viewers) {
-                Bukkit.getPlayer(uuid).openInventory(new SelectorMenu().getInventory());
+                Bukkit.getPlayer(uuid).getOpenInventory().getTopInventory().setItem(slot, SelectorMenu.updateInventoryIcon(arena));
             }
         });
     }
