@@ -62,7 +62,7 @@ public class Util {
         if (arenas.containsKey(name)) {
             final Arena arena = arenas.get(name);
             arena.setMaxPlayers(Integer.parseInt(maxPlayers));
-            if (arenaStatus != null)
+            if (arenaStatus != null && !arena.getStatus().name().equals(arenaStatus))
                 arena.setStatus(Arena.ArenaStatus.valueOf(arenaStatus));
             return arena;
         }
