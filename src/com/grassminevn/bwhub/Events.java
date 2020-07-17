@@ -136,9 +136,10 @@ public class Events implements Listener {
             default:
                 return;
         }
+        SelectorMenu.updateInventoryIcon(arena);
         Bukkit.getScheduler().runTask(BedwarsHub.plugin, () -> {
             for (final UUID uuid : viewers) {
-                Bukkit.getPlayer(uuid).getOpenInventory().getTopInventory().setItem(slot, SelectorMenu.updateInventoryIcon(arena));
+                Bukkit.getPlayer(uuid).getOpenInventory().getTopInventory().setItem(slot, new SelectorMenu().getInventory().getItem(slot));
             }
         });
     }

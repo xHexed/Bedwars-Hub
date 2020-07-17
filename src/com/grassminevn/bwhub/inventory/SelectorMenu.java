@@ -56,22 +56,21 @@ public class SelectorMenu implements InventoryHolder {
         inventory.setItem(27, auto);
     }
 
-    public static ItemStack updateInventoryIcon(final Arena arena) {
+    public static void updateInventoryIcon(final Arena arena) {
         switch (arena.getArenaType()) {
-            case SOLO: {
-                return setInventoryIcon("§fPhòng: Solo " + arena.getArenaNumber(), arena.getName(), arena.getMaxPlayers(), 9 + arena.getArenaNumber());
-            }
-            case DUO: {
-                return setInventoryIcon("§fPhòng: Duo " + arena.getArenaNumber(), arena.getName(), arena.getMaxPlayers(), 18 + arena.getArenaNumber());
-            }
-            case SQUAD: {
-                return setInventoryIcon("§fPhòng: Squad " + arena.getArenaNumber(), arena.getName(), arena.getMaxPlayers(), 27 + arena.getArenaNumber());
-            }
+            case SOLO:
+                setInventoryIcon("§fPhòng: Solo " + arena.getArenaNumber(), arena.getName(), arena.getMaxPlayers(), 9 + arena.getArenaNumber());
+                break;
+            case DUO:
+                setInventoryIcon("§fPhòng: Duo " + arena.getArenaNumber(), arena.getName(), arena.getMaxPlayers(), 18 + arena.getArenaNumber());
+                break;
+            case SQUAD:
+                setInventoryIcon("§fPhòng: Squad " + arena.getArenaNumber(), arena.getName(), arena.getMaxPlayers(), 27 + arena.getArenaNumber());
+                break;
         }
-        return new ItemStack(Material.AIR);
     }
 
-    private static ItemStack setInventoryIcon(final String iconName, final String arenaName, final int maxPlayers, final int slot) {
+    private static void setInventoryIcon(final String iconName, final String arenaName, final int maxPlayers, final int slot) {
         ItemStack arenaIcon;
         final ItemMeta meta;
         final Arena arena = Util.getArena(arenaName);
@@ -104,7 +103,6 @@ public class SelectorMenu implements InventoryHolder {
         meta.setDisplayName(iconName);
         arenaIcon.setItemMeta(meta);
         inventory.setItem(slot, arenaIcon);
-        return arenaIcon;
     }
 
     private static void setInventoryIcons(final String iconName, final String arenaType, final int maxPlayers, final int slot) {
