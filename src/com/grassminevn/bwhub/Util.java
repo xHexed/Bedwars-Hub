@@ -58,12 +58,19 @@ public class Util {
         Events.updateView(arenas.remove(arena));
     }
 
-    public static Arena addArena(final String name, final String madeBy, final String maxPlayers, final String arenaStatus) {
+    public static Arena addArena(final String name,
+                                 final String madeBy,
+                                 final String maxPlayers,
+                                 final String arenaStatus,
+                                 final Integer players) {
         if (arenas.containsKey(name)) {
             final Arena arena = arenas.get(name);
             arena.setMaxPlayers(Integer.parseInt(maxPlayers));
             if (arenaStatus != null && !arena.getStatus().name().equals(arenaStatus))
                 arena.setStatus(Arena.ArenaStatus.valueOf(arenaStatus));
+            if (players != null && arena.getPlayers() != players) {
+                arena.setPlayers(players);
+            }
             return arena;
         }
         System.out.println("Added arena " + name + "(" + maxPlayers + ")");
