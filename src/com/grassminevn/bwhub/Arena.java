@@ -85,14 +85,20 @@ public class Arena {
     public List<String> getLore() {
         final List<String> list = new ArrayList<>();
         list.add("§fMap: " + madeBy);
-        if (status == ArenaStatus.Running) {
-            list.add(Language.Sign_Running.getMessage());
-        } else if (status == ArenaStatus.Stopped) {
-            list.add(Language.Sign_Stopped.getMessage());
-        } else if (status == ArenaStatus.Lobby) {
-            list.add(Language.Sign_Lobby.getMessage());
-        } else if (status == ArenaStatus.Reseting || status == ArenaStatus.EndLobby) {
-            list.add(Language.Sign_Reseting.getMessage());
+        switch (status) {
+            case Running:
+                list.add(Language.Sign_Running.getMessage());
+                break;
+            case Stopped:
+                list.add(Language.Sign_Stopped.getMessage());
+                break;
+            case Lobby:
+                list.add(Language.Sign_Lobby.getMessage());
+                break;
+            case Reseting:
+            case EndLobby:
+                list.add(Language.Sign_Reseting.getMessage());
+                break;
         }
         list.add("§fNgười chơi: " + players + "/" + maxPlayers);
         return list;
@@ -103,7 +109,7 @@ public class Arena {
     }
 
     public boolean canAutoJoin() {
-        return players < maxPlayers || status == ArenaStatus.Lobby;
+        return status == ArenaStatus.Lobby && players < maxPlayers;
     }
 
     public ArenaType getArenaType() {
