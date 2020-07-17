@@ -24,15 +24,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Util {
-    private static final Random random = ThreadLocalRandom.current();
     public static boolean config_beta;
-    public static final boolean config_signAntispam = true;
-    public static final double config_antispamDelay = 1.0;
     public static String config_subchannel = "lobby";
     public static final Map<String, Arena> arenas = new ConcurrentHashMap<>();
 
@@ -106,7 +102,7 @@ public class Util {
             goodArenas.add(a);
         }
         if (!goodArenas.isEmpty()) {
-            connect(player, goodArenas.get(random.nextInt(goodArenas.size())));
+            connect(player, goodArenas.get(ThreadLocalRandom.current().nextInt(goodArenas.size())));
         } else {
             player.sendMessage(Language.Arenas_Full.getMessage());
         }

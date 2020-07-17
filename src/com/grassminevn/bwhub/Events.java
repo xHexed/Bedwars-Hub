@@ -86,10 +86,8 @@ public class Events implements Listener {
         } else {
             player.sendMessage(Language.Only_BetaMember.getMessage());
         }
-        if (Util.config_signAntispam) {
-            cooldown.add(player.getUniqueId());
-            Bukkit.getScheduler().runTaskLater(BedwarsHub.plugin, () -> cooldown.remove(player.getUniqueId()), (int) (Util.config_antispamDelay * 20));
-        }
+        cooldown.add(player.getUniqueId());
+        Bukkit.getScheduler().runTaskLater(BedwarsHub.plugin, () -> cooldown.remove(player.getUniqueId()), 20);
     }
 
     private boolean isArenaClicked(final int slot) {
