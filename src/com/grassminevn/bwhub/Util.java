@@ -17,6 +17,7 @@
 package com.grassminevn.bwhub;
 
 import me.MathiasMC.PvPLevels.PvPLevelsAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.io.ByteArrayOutputStream;
@@ -111,21 +112,23 @@ public class Util {
 
     public static void connect(final Player player, final Arena arena) {
         player.sendMessage(Language.JoinMessage_connecting.getMessage());
-        PvPLevelsAPI.api.syncSave(player.getUniqueId().toString());
-        final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        final DataOutputStream out = new DataOutputStream(bytes);
-        try {
-            out.writeUTF("Connect");
-            out.writeUTF(arena.getName());
-            player.sendPluginMessage(BedwarsHub.plugin, "BungeeCord", bytes.toByteArray());
-            out.flush();
-            bytes.flush();
-            out.close();
-            bytes.close();
-        }
-        catch (final IOException e) {
-            e.printStackTrace();
-        }
+        Bukkit.getScheduler().runTaskAsynchronously(BedwarsHub.plugin, () -> {
+            PvPLevelsAPI.api.syncSave(player.getUniqueId().toString());
+            final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            final DataOutputStream out = new DataOutputStream(bytes);
+            try {
+                out.writeUTF("Connect");
+                out.writeUTF(arena.getName());
+                player.sendPluginMessage(BedwarsHub.plugin, "BungeeCord", bytes.toByteArray());
+                out.flush();
+                bytes.flush();
+                out.close();
+                bytes.close();
+            }
+            catch (final IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
 }
