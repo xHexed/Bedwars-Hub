@@ -80,23 +80,36 @@ public class SelectorMenu implements InventoryHolder {
             meta.setLore(Arrays.asList("§fMap: ???", "§fTrạng thái: Dừng hoạt động", "§fNgười chơi: 0/" + maxPlayers));
         }
         else {
-            if (arena.getStatus() == Arena.ArenaStatus.Running || arena.getStatus() == Arena.ArenaStatus.Reseting) {
-                arenaIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 14);
-                meta = arenaIcon.getItemMeta();
-            }
-            else {
-                arenaIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 5);
-                meta = arenaIcon.getItemMeta();
-                if (arena.getPlayers() <= 0) {
-                    arenaIcon.setAmount(1);
-                }
-                else {
-                    if (arena.getPlayers() > maxPlayers / 2)
-                        arenaIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 4);
-                    arenaIcon.setAmount(arena.getPlayers());
-                    meta.addEnchant(Enchantment.DAMAGE_ALL, 1, true);
-                    meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                }
+            switch (arena.getStatus()) {
+                case Stopped:
+                    arenaIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 15);
+                    meta = arenaIcon.getItemMeta();
+                    meta.setLore(Arrays.asList("§fMap: ???", "§fTrạng thái: Dừng hoạt động", "§fNgười chơi: 0/" + maxPlayers));
+                    break;
+                case Running:
+                    arenaIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 14);
+                    meta = arenaIcon.getItemMeta();
+                    break;
+                case Reseting:
+                    arenaIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 11);
+                    meta = arenaIcon.getItemMeta();
+                    break;
+                default:
+                    arenaIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 5);
+                    meta = arenaIcon.getItemMeta();
+                    if (arena.getPlayers() <= 0) {
+                        arenaIcon.setAmount(1);
+                    }
+                    else {
+                        if (arena.getPlayers() > maxPlayers / 2)
+                            arenaIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 4);
+                        if (arena.getPlayers() == maxPlayers)
+                            arenaIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 1);
+                        arenaIcon.setAmount(arena.getPlayers());
+                        meta.addEnchant(Enchantment.DAMAGE_ALL, 1, true);
+                        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                    }
+                    break;
             }
             meta.setLore(arena.getLore());
         }
