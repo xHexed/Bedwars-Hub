@@ -16,6 +16,7 @@
  */
 package com.grassminevn.bwhub;
 
+import com.grassminevn.levels.LevelsAPI;
 import me.MathiasMC.PvPLevels.PvPLevelsAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -114,6 +115,7 @@ public class Util {
         player.sendMessage(Language.JoinMessage_connecting.getMessage());
         Bukkit.getScheduler().runTaskAsynchronously(BedwarsHub.plugin, () -> {
             PvPLevelsAPI.api.syncSave(player.getUniqueId().toString());
+            LevelsAPI.api.syncSave(player.getUniqueId().toString());
             final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
             final DataOutputStream out = new DataOutputStream(bytes);
             try {
