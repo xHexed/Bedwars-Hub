@@ -90,6 +90,10 @@ public class SelectorMenu implements InventoryHolder {
                     arenaIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 14);
                     meta = arenaIcon.getItemMeta();
                     break;
+                case EndLobby:
+                    arenaIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 2);
+                    meta = arenaIcon.getItemMeta();
+                    break;
                 case Reseting:
                     arenaIcon = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 11);
                     meta = arenaIcon.getItemMeta();
