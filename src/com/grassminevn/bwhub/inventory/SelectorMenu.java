@@ -1,10 +1,12 @@
 package com.grassminevn.bwhub.inventory;
 
-import com.grassminevn.bwhub.Arena;
-import com.grassminevn.bwhub.Util;
+import com.grassminevn.bwhub.*;
+import com.grassminevn.bwhub.inventory.arena.ArenaUpdateHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemFlag;
@@ -14,7 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.Arrays;
 import java.util.Collections;
 
-public class SelectorMenu implements InventoryHolder {
+public class SelectorMenu implements InventoryHolder, InventoryHandler, ArenaUpdateHandler {
     private static final Inventory inventory = Bukkit.createInventory(new SelectorMenu(), 54, "Chọn phòng");
 
     static {
@@ -56,7 +58,7 @@ public class SelectorMenu implements InventoryHolder {
         inventory.setItem(27, auto);
     }
 
-    public static void updateInventoryIcon(final Arena arena) {
+    private static void updateInventoryIcon(final Arena arena) {
         switch (arena.getArenaType()) {
             case SOLO:
                 setInventoryIcon("§fPhòng: Solo " + arena.getArenaNumber(), arena.getName(), arena.getMaxPlayers(), 9 + arena.getArenaNumber());
@@ -130,6 +132,65 @@ public class SelectorMenu implements InventoryHolder {
 
     @Override
     public Inventory getInventory() {
+        return inventory;
+    }
+
+    @Override
+    public void onClick(final InventoryClickEvent event) {
+        final Player player = (Player) event.getWhoClicked();
+        final Inventory inventory = event.getClickedInventory();
+        if (inventory != null && !(inventory.getHolder() instanceof SelectorMenu)) return;
+        event.setCancelled(true);
+        final int slot = event.getSlot();
+        if (slot == 41) {
+            Util.autoJoin(player, "");
+        }
+        if (!isArenaClicked(slot)) return;
+        if (!Util.config_beta || player.hasPermission(Permission.BetaUser.getPermission())) {
+            if (isAutoJoin(slot)) {
+                Util.autoJoin(player, getMode(slot));
+            } else {
+                final Arena arena = Util.getArena(getMode(slot) + getArenaNumber(slot));
+                if (arena == null || !arena.isJoinable()) return;
+                Util.connect(player, arena);
+            }
+        } else {
+            player.sendMessage(Language.Only_BetaMember.getMessage());
+        }
+    }
+
+    private boolean isArenaClicked(final int slot) {
+        return slot >= 9 && slot <= 35;
+    }
+
+    private int getArenaNumber(final int slot) {
+        if (slot >= 10 && slot <= 17)
+            return slot - 9;
+        if (slot >= 19 && slot <= 26)
+            return slot - 18;
+        if (slot >= 28 && slot <= 35)
+            return slot - 27;
+        else
+            return 0;
+    }
+
+    private String getMode(final int slot) {
+        if (slot >= 9 && slot <= 17)
+            return "bw_solo";
+        if (slot >= 18 && slot <= 26)
+            return "bw_duo";
+        else
+            return "bw_squad";
+    }
+
+    private boolean isAutoJoin(final int slot) {
+        return slot == 9 || slot == 18 || slot == 27;
+    }
+
+    @Override
+    public Inventory onUpdate(final Arena arena) {
+        if (arena == null) return inventory;
+        SelectorMenu.updateInventoryIcon(arena);
         return inventory;
     }
 }

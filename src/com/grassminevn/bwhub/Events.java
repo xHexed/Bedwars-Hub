@@ -35,110 +35,76 @@
  */
 package com.grassminevn.bwhub;
 
+import com.grassminevn.bwhub.inventory.InventoryHandler;
 import com.grassminevn.bwhub.inventory.SelectorMenu;
+import com.grassminevn.bwhub.inventory.arena.ArenaUpdateHandler;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Events implements Listener {
     private static final Set<UUID> cooldown = new HashSet<>();
-    private static final Collection<UUID> viewers = ConcurrentHashMap.newKeySet();
+    private static final Collection<HumanEntity> viewers = ConcurrentHashMap.newKeySet();
 
     @EventHandler
     public void onInventoryOpenEvent(final InventoryOpenEvent event) {
         if (!(event.getInventory().getHolder() instanceof SelectorMenu)) return;
-        viewers.add(event.getPlayer().getUniqueId());
+        viewers.add(event.getPlayer());
     }
 
     @EventHandler
     public void onInventoryCloseEvent(final InventoryCloseEvent event) {
-        viewers.remove(event.getPlayer().getUniqueId());
+        viewers.remove(event.getPlayer());
     }
 
     @EventHandler
     public void onInventoryClickEvent(final InventoryClickEvent event) {
-        final Inventory inventory = event.getClickedInventory();
-        if (inventory != null && !(inventory.getHolder() instanceof SelectorMenu)) return;
-        event.setCancelled(true);
-        final Player player = (Player) event.getWhoClicked();
-        final int slot = event.getSlot();
-        if (slot == 41) {
-            Util.autoJoin(player, "");
-        }
-        if (!isArenaClicked(slot)) return;
-        if (cooldown.contains(player.getUniqueId()))
-            return;
-        if (!Util.config_beta || player.hasPermission(Permission.BetaUser.getPermission())) {
-            if (isAutoJoin(slot)) {
-                Util.autoJoin(player, getMode(slot));
-            } else {
-                final Arena arena = Util.getArena(getMode(slot) + getArenaNumber(slot));
-                if (arena == null || !arena.isJoinable()) return;
-                Util.connect(player, arena);
-            }
-        } else {
-            player.sendMessage(Language.Only_BetaMember.getMessage());
+        final ItemStack item = event.getCurrentItem();
+        if (item == null || !item.getType().isItem()) return;
+        final Entity player = event.getWhoClicked();
+        final Inventory inventory = event.getView().getTopInventory();
+        final InventoryHolder topInventory = inventory.getHolder();
+        if (topInventory instanceof InventoryHandler) {
+            if (cooldown.contains(player.getUniqueId()))
+                return;
+            final InventoryHandler holder = ((InventoryHandler) topInventory);
+            if (event.getInventory().equals(inventory))
+                holder.onClick(event);
         }
         cooldown.add(player.getUniqueId());
         Bukkit.getScheduler().runTaskLater(BedwarsHub.plugin, () -> cooldown.remove(player.getUniqueId()), 20);
     }
 
-    private boolean isArenaClicked(final int slot) {
-        return slot >= 9 && slot <= 35;
-    }
-
-    private int getArenaNumber(final int slot) {
-        if (slot >= 10 && slot <= 17)
-            return slot - 9;
-        if (slot >= 19 && slot <= 26)
-            return slot - 18;
-        if (slot >= 28 && slot <= 35)
-            return slot - 27;
-        else
-            return 0;
-    }
-
-    private String getMode(final int slot) {
-        if (slot >= 9 && slot <= 17)
-            return "bw_solo";
-        if (slot >= 18 && slot <= 26)
-            return "bw_duo";
-        else
-            return "bw_squad";
-    }
-
-    private boolean isAutoJoin(final int slot) {
-        return slot == 9 || slot == 18 || slot == 27;
-    }
-
     public static void updateView(final Arena arena) {
         if (arena == null) return;
-        final int slot;
-        switch (arena.getArenaType()) {
-            case SOLO:
-                slot = 9 + arena.getArenaNumber();
-                break;
-            case DUO:
-                slot = 18 + arena.getArenaNumber();
-                break;
-            case SQUAD:
-                slot = 27 + arena.getArenaNumber();
-                break;
-            default:
-                return;
-        }
-        SelectorMenu.updateInventoryIcon(arena);
         Bukkit.getScheduler().runTask(BedwarsHub.plugin, () -> {
-            for (final UUID uuid : viewers) {
-                Bukkit.getPlayer(uuid).getOpenInventory().getTopInventory().setItem(slot, new SelectorMenu().getInventory().getItem(slot));
+            final Optional<HumanEntity> viewer = viewers.parallelStream().findAny();
+            if (!viewer.isPresent()) return;
+            final Inventory inventory = viewer.get().getOpenInventory().getTopInventory();
+            final Inventory currentInventory = viewer.get().getOpenInventory().getTopInventory();
+            final Inventory updatedInventory = ((ArenaUpdateHandler) inventory).onUpdate(arena);
+            final ItemStack[] currentContents = currentInventory.getContents();
+            final ItemStack[] updatedContents = updatedInventory.getContents();
+            final Map<Integer, ItemStack> itemUpdateList = new HashMap<>();
+            for (int i = 0; i < inventory.getSize(); i++) {
+                if (currentContents[i].isSimilar(updatedContents[i])) {
+                    itemUpdateList.put(i, updatedContents[i]);
+                }
+            }
+            for (final HumanEntity player : viewers) {
+                final Inventory playerInventory = player.getOpenInventory().getTopInventory();
+                itemUpdateList.forEach(playerInventory::setItem);
             }
         });
     }
