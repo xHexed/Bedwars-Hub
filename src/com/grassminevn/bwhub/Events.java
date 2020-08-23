@@ -98,6 +98,7 @@ public class Events implements Listener {
             final ItemStack[] updatedContents = updatedInventory.getContents();
             final Map<Integer, ItemStack> itemUpdateList = new HashMap<>();
             for (int i = 0; i < inventory.getSize(); i++) {
+                if (currentContents[i] == null) continue;
                 if (currentContents[i].isSimilar(updatedContents[i])) {
                     itemUpdateList.put(i, updatedContents[i]);
                 }
