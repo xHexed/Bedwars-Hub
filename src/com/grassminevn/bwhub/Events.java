@@ -93,7 +93,7 @@ public class Events implements Listener {
             if (!viewer.isPresent()) return;
             final Inventory inventory = viewer.get().getOpenInventory().getTopInventory();
             final Inventory currentInventory = viewer.get().getOpenInventory().getTopInventory();
-            final Inventory updatedInventory = ((ArenaUpdateHandler) inventory).onUpdate(arena);
+            final Inventory updatedInventory = ((ArenaUpdateHandler) inventory.getHolder()).onUpdate(arena);
             final ItemStack[] currentContents = currentInventory.getContents();
             final ItemStack[] updatedContents = updatedInventory.getContents();
             final Map<Integer, ItemStack> itemUpdateList = new HashMap<>();
