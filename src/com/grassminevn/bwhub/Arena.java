@@ -96,6 +96,7 @@ public class Arena {
                 list.add(Language.Sign_Lobby.getMessage());
                 break;
             case Reseting:
+            case Resetting:
             case EndLobby:
                 list.add(Language.Sign_Reseting.getMessage());
                 break;
@@ -125,6 +126,7 @@ public class Arena {
         Lobby,
         Running,
         Reseting,
+        Resetting,
         EndLobby
     }
 
