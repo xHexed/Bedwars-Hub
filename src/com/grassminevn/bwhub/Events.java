@@ -92,10 +92,8 @@ public class Events implements Listener {
             final Optional<HumanEntity> viewer = viewers.parallelStream().findAny();
             if (!viewer.isPresent()) return;
             final Inventory inventory = viewer.get().getOpenInventory().getTopInventory();
-            final Inventory currentInventory = viewer.get().getOpenInventory().getTopInventory();
-            final Inventory updatedInventory = ((ArenaUpdateHandler) inventory.getHolder()).onUpdate(arena);
-            final ItemStack[] currentContents = currentInventory.getContents();
-            final ItemStack[] updatedContents = updatedInventory.getContents();
+            final ItemStack[] currentContents = viewer.get().getOpenInventory().getTopInventory().getContents();
+            final ItemStack[] updatedContents = ((ArenaUpdateHandler) inventory.getHolder()).onUpdate(arena).getContents();
             final Map<Integer, ItemStack> itemUpdateList = new HashMap<>();
             for (int i = 0; i < inventory.getSize(); i++) {
                 if (currentContents[i] == null) continue;
@@ -104,8 +102,7 @@ public class Events implements Listener {
                 }
             }
             for (final HumanEntity player : viewers) {
-                final Inventory playerInventory = player.getOpenInventory().getTopInventory();
-                itemUpdateList.forEach(playerInventory::setItem);
+                itemUpdateList.forEach(player.getOpenInventory().getTopInventory()::setItem);
             }
         });
     }
