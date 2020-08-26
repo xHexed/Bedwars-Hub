@@ -87,18 +87,18 @@ public class Arena {
         list.add("§fMap: " + madeBy);
         switch (status) {
             case Running:
-                list.add(Language.Sign_Running.getMessage());
+                list.add(Language.ARENA_RUNNING.toString());
                 break;
             case Stopped:
-                list.add(Language.Sign_Stopped.getMessage());
+                list.add(Language.ARENA_STOPPED.toString());
                 break;
             case Lobby:
-                list.add(Language.Sign_Lobby.getMessage());
+                list.add(Language.ARENA_LOBBY.toString());
                 break;
             case Reseting:
             case Resetting:
             case EndLobby:
-                list.add(Language.Sign_Reseting.getMessage());
+                list.add(Language.ARENA_RESETING.toString());
                 break;
         }
         list.add("§fNgười chơi: " + players + "/" + maxPlayers);

@@ -107,12 +107,12 @@ public class Util {
         if (!goodArenas.isEmpty()) {
             connect(player, goodArenas.get(ThreadLocalRandom.current().nextInt(goodArenas.size())));
         } else {
-            player.sendMessage(Language.Arenas_Full.getMessage());
+            player.sendMessage(Language.Arenas_Full.toString());
         }
     }
 
     public static void connect(final Player player, final Arena arena) {
-        player.sendMessage(Language.JoinMessage_connecting.getMessage());
+        player.sendMessage(Language.JoinMessage_connecting.toString());
         Bukkit.getScheduler().runTaskAsynchronously(BedwarsHub.plugin, () -> {
             PvPLevelsAPI.api.syncSave(player.getUniqueId().toString());
             LevelsAPI.api.syncSave(player.getUniqueId().toString());

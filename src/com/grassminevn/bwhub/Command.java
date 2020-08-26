@@ -45,12 +45,12 @@ implements CommandExecutor {
         addIfHasPermission(cmds, sender, Permission.Command_Info, "/" + label + " info <arena>");
         addIfHasPermission(cmds, sender, Permission.Reload, "/" + label + " reload");
         if (cmds.size() >= 1) {
-            sender.sendMessage(Language.All_Commands.getMessage());
+            sender.sendMessage(Language.All_Commands.toString());
             for (final String usage : cmds) {
                 sender.sendMessage(ChatColor.AQUA + usage);
             }
         } else {
-            sender.sendMessage(Language.No_Permissions.getMessage());
+            sender.sendMessage(Language.No_Permissions.toString());
         }
         return true;
     }
@@ -66,13 +66,13 @@ implements CommandExecutor {
                         if (arena != null) {
                             Util.connect(player, arena);
                         } else {
-                            player.sendMessage(ARENA.matcher(Language.NotFound_Arena.getMessage()).replaceAll(Matcher.quoteReplacement(args[1])));
+                            player.sendMessage(ARENA.matcher(Language.NotFound_Arena.toString()).replaceAll(Matcher.quoteReplacement(args[1])));
                         }
                     } else {
-                        sender.sendMessage(Language.OnlyAs_Player.getMessage());
+                        sender.sendMessage(Language.OnlyAs_Player.toString());
                     }
                 } else {
-                    sender.sendMessage(ChatColor.GOLD + Language.Usage.getMessage() + ": " + ChatColor.YELLOW + "/" + label + " join <arena name>");
+                    sender.sendMessage(ChatColor.GOLD + Language.Usage.toString() + ": " + ChatColor.YELLOW + "/" + label + " join <arena name>");
                 }
                 return true;
             }
@@ -83,7 +83,7 @@ implements CommandExecutor {
                     else
                         Util.autoJoin((Player) sender, "");
                 } else {
-                    sender.sendMessage(ChatColor.GOLD + Language.Usage.getMessage() + ": " + ChatColor.YELLOW + "/" + label + " join <arena name>");
+                    sender.sendMessage(ChatColor.GOLD + Language.Usage.toString() + ": " + ChatColor.YELLOW + "/" + label + " join <arena name>");
                 }
                 return true;
             }
@@ -99,9 +99,9 @@ implements CommandExecutor {
                     ++i;
                 }
                 if (str.length() == 0) {
-                    sender.sendMessage(Language.List_Arenas.getMessage() + Language.List_Arenas_None.getMessage());
+                    sender.sendMessage(Language.List_Arenas + Language.List_Arenas_None.toString());
                 } else {
-                    sender.sendMessage(Language.List_Arenas.getMessage() + str);
+                    sender.sendMessage(Language.List_Arenas.toString() + str);
                 }
                 return true;
             }

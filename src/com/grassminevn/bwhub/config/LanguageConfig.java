@@ -31,7 +31,7 @@ public class LanguageConfig {
     private static void save() {
         cm.clear();
         for (final Language l : Language.values()) {
-            cm.addConfig(l.name(), Language.chatColorToString(l.getMessage()));
+            cm.addConfig(l.name(), Language.chatColorToString(l.toString()));
         }
         cm.save();
     }

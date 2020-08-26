@@ -21,14 +21,11 @@ public enum Language {
     Unkown_Argument(ChatColor.RED + "Unkown argument " + ChatColor.DARK_RED + "{arg}"),
     Error_Occured(ChatColor.RED + "A error occured!"),
     No_Permissions(ChatColor.RED + "You've got no permissions!"),
-    Sign_Lobby(ChatColor.YELLOW + "Waiting..."),
-    Sign_Running(ChatColor.GOLD + "Running"),
-    Sign_Stopped(ChatColor.RED + "Stopped"),
-    Sign_Reseting(ChatColor.GREEN + "Reseting"),
-    Sign_Offline(ChatColor.RED + "Offline"),
-    Added_Sign(ChatColor.DARK_GREEN + "Sign " + ChatColor.GREEN + "has been successfully added!"),
-    Removed_Sign(ChatColor.GOLD + "Removed sign"),
-    NotLooking_AtSign( ChatColor.RED + "You're not looking at an sign!"),
+    ARENA_LOBBY(ChatColor.YELLOW + "Waiting..."),
+    ARENA_RUNNING(ChatColor.GOLD + "Running"),
+    ARENA_STOPPED(ChatColor.RED + "Stopped"),
+    ARENA_RESETING(ChatColor.GREEN + "Reseting"),
+    ARENA_OFFLINE(ChatColor.RED + "Offline"),
     Usage("Usage"),
     OnlyAs_Player( ChatColor.RED + "This works only as an player!"),
     NotFound_Arena(ChatColor.RED + "There's no arena with the name " + ChatColor.DARK_RED + "{arena}" + ChatColor.RED + "!"),
@@ -39,7 +36,6 @@ public enum Language {
     JoinMessage_connecting(ChatColor.YELLOW + "Connecting to the server..."),
     Only_BetaMember(ChatColor.RED + "You are now allowed to join while bedwars is in the beta!"),
     Number_NotOne(ChatColor.DARK_RED + "{number} " + ChatColor.RED + "is not a number!"),
-    Spawned_LobbyVillager( ChatColor.DARK_GREEN + "lobbyvillager " + ChatColor.GREEN + "has been successfully spawned!"),
     Arenas_Full(ChatColor.RED + "All arenas are full!");
     
     private final String selected_message;
@@ -53,7 +49,8 @@ public enum Language {
         selected_message = msg;
     }
 
-    public String getMessage() {
+    @Override
+    public String toString() {
         if (translations.containsKey(this)) {
             return translations.get(this);
         }
@@ -76,7 +73,7 @@ public enum Language {
 
     public static Language getLanguage(final String str) {
         for (final Language l : Language.values()) {
-            if (!l.name().equalsIgnoreCase(str) && !l.getMessage().equalsIgnoreCase(str)) continue;
+            if (!l.name().equalsIgnoreCase(str) && !l.toString().equalsIgnoreCase(str)) continue;
             return l;
         }
         return null;

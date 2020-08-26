@@ -155,7 +155,7 @@ public class SelectorMenu implements InventoryHolder, InventoryHandler, ArenaUpd
                 Util.connect(player, arena);
             }
         } else {
-            player.sendMessage(Language.Only_BetaMember.getMessage());
+            player.sendMessage(Language.Only_BetaMember.toString());
         }
     }
 
