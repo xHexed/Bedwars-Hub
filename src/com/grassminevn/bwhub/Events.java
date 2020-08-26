@@ -51,11 +51,10 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class Events implements Listener {
     private static final Set<UUID> cooldown = new HashSet<>();
-    private static final Collection<HumanEntity> viewers = ConcurrentHashMap.newKeySet();
+    private static final Collection<HumanEntity> viewers = new HashSet<>();
 
     @EventHandler
     public void onInventoryOpenEvent(final InventoryOpenEvent event) {
