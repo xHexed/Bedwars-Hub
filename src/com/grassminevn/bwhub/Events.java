@@ -36,11 +36,9 @@
 package com.grassminevn.bwhub;
 
 import com.grassminevn.bwhub.inventory.InventoryHandler;
-import com.grassminevn.bwhub.inventory.SelectorMenu;
-import com.grassminevn.bwhub.inventory.arena.ArenaUpdateHandler;
+import com.grassminevn.bwhub.inventory.arena.ArenaMenuHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -50,21 +48,21 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 public class Events implements Listener {
     private static final Set<UUID> cooldown = new HashSet<>();
-    private static final Collection<HumanEntity> viewers = new HashSet<>();
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onInventoryOpenEvent(final InventoryOpenEvent event) {
-        if (!(event.getInventory().getHolder() instanceof SelectorMenu)) return;
-        viewers.add(event.getPlayer());
+        ArenaMenuHandler.addViewer(event);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onInventoryCloseEvent(final InventoryCloseEvent event) {
-        viewers.remove(event.getPlayer());
+        ArenaMenuHandler.removeViewer(event);
     }
 
     @EventHandler
@@ -85,25 +83,5 @@ public class Events implements Listener {
         Bukkit.getScheduler().runTaskLater(BedwarsHub.plugin, () -> cooldown.remove(player.getUniqueId()), 20);
     }
 
-    public static void updateView(final Arena arena) {
-        if (arena == null) return;
-        Bukkit.getScheduler().runTask(BedwarsHub.plugin, () -> {
-            final Optional<HumanEntity> viewer = viewers.parallelStream().findAny();
-            if (!viewer.isPresent()) return;
-            final Inventory inventory = viewer.get().getOpenInventory().getTopInventory();
-            final ItemStack[] currentContents = viewer.get().getOpenInventory().getTopInventory().getContents();
-            final ItemStack[] updatedContents = ((ArenaUpdateHandler) inventory.getHolder()).onUpdate(arena).getContents();
-            final Map<Integer, ItemStack> itemUpdateList = new HashMap<>();
-            for (int i = 0; i < inventory.getSize(); i++) {
-                if (currentContents[i] == null) continue;
-                if (currentContents[i].isSimilar(updatedContents[i])) {
-                    itemUpdateList.put(i, updatedContents[i]);
-                }
-            }
-            for (final HumanEntity player : viewers) {
-                itemUpdateList.forEach(player.getOpenInventory().getTopInventory()::setItem);
-            }
-        });
-    }
 }
 

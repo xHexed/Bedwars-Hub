@@ -19,7 +19,7 @@ package com.grassminevn.bwhub;
 
 import com.grassminevn.bwhub.config.Config;
 import com.grassminevn.bwhub.config.LanguageConfig;
-import com.grassminevn.bwhub.inventory.SelectorMenu;
+import com.grassminevn.bwhub.inventory.arena.ArenaMenuHandler;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -41,6 +41,7 @@ implements CommandExecutor {
         final Collection<String> cmds = new ArrayList<>();
         addIfHasPermission(cmds, sender, Permission.Command_List, "/" + label + " join <arena>");
         addIfHasPermission(cmds, sender, Permission.Command_List, "/" + label + " auto [solo/duo/squad]");
+        addIfHasPermission(cmds, sender, Permission.Command_List, "/" + label + " menu [solo/duo/squad]");
         addIfHasPermission(cmds, sender, Permission.Command_List, "/" + label + " list");
         addIfHasPermission(cmds, sender, Permission.Command_Info, "/" + label + " info <arena>");
         addIfHasPermission(cmds, sender, Permission.Reload, "/" + label + " reload");
@@ -81,7 +82,7 @@ implements CommandExecutor {
                     if (args.length >= 2)
                         Util.autoJoin((Player) sender, args[1]);
                     else
-                        Util.autoJoin((Player) sender, "");
+                        Util.autoJoin((Player) sender, Util.arenas.values(), "");
                 } else {
                     sender.sendMessage(ChatColor.GOLD + Language.Usage.toString() + ": " + ChatColor.YELLOW + "/" + label + " join <arena name>");
                 }
@@ -105,11 +106,24 @@ implements CommandExecutor {
                 }
                 return true;
             }
-            case "menu": {
-                if (!(sender instanceof Player)) return false;
-                ((HumanEntity) sender).openInventory(new SelectorMenu().getInventory());
-                return true;
-            }
+            case "menu":
+                if (!(sender instanceof Player))
+                    return false;
+                if (args.length >= 2) {
+                    switch (args[1].toLowerCase()) {
+                        case "solo":
+                            ((HumanEntity) sender).openInventory(ArenaMenuHandler.getSoloArenaMenu().getInventory());
+                            break;
+                        case "duo":
+                            ((HumanEntity) sender).openInventory(ArenaMenuHandler.getDuoArenaMenu().getInventory());
+                            break;
+                        case "squad":
+                            ((HumanEntity) sender).openInventory(ArenaMenuHandler.getSquadArenaMenu().getInventory());
+                            break;
+                    }
+                    return true;
+                }
+                return false;
             case "reload": {
                 LanguageConfig.load();
                 Config.load();

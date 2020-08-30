@@ -7,6 +7,8 @@
  */
 package com.grassminevn.bwhub;
 
+import com.grassminevn.bwhub.inventory.arena.ArenaMenuHandler;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,17 +55,17 @@ public class Arena {
 
     public void setPlayers(final int players) {
         this.players = players;
-        Events.updateView(this);
+        ArenaMenuHandler.updateView(this);
     }
 
     public void setStatus(final ArenaStatus status) {
         this.status = status;
-        Events.updateView(this);
+        ArenaMenuHandler.updateView(this);
     }
 
     public void setMaxPlayers(final int maxPlayers) {
         this.maxPlayers = maxPlayers;
-        Events.updateView(this);
+        ArenaMenuHandler.updateView(this);
     }
 
     public String getName() {

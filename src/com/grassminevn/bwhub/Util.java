@@ -16,6 +16,7 @@
  */
 package com.grassminevn.bwhub;
 
+import com.grassminevn.bwhub.inventory.arena.ArenaMenuHandler;
 import com.grassminevn.levels.LevelsAPI;
 import me.MathiasMC.PvPLevels.PvPLevelsAPI;
 import org.bukkit.Bukkit;
@@ -43,18 +44,12 @@ public class Util {
     }
 
     public static boolean isInteger(final char number) {
-        try {
-            Integer.parseInt(String.valueOf(number));
-        }
-        catch (final NumberFormatException e) {
-            return false;
-        }
-        return true;
+        return '0' <= number && number <= '9';
     }
 
     public static void removeArena(final String arena) {
         System.out.println("Trying to remove arena " + arena);
-        Events.updateView(arenas.remove(arena));
+        ArenaMenuHandler.updateView(arenas.remove(arena));
     }
 
     public static Arena addArena(final String name,
@@ -77,7 +72,7 @@ public class Util {
         if (arenaStatus != null)
             arena.setStatus(Arena.ArenaStatus.valueOf(arenaStatus));
         arenas.put(name, arena);
-        Events.updateView(arena);
+        ArenaMenuHandler.updateView(arena);
         return arena;
     }
 
@@ -89,9 +84,13 @@ public class Util {
     }
 
     public static void autoJoin(final Player player, final String mode) {
+        autoJoin(player, arenas.values(), mode);
+    }
+
+    public static void autoJoin(final Player player, final Iterable<Arena> arenas, final String fillter) {
         final ArrayList<Arena> goodArenas = new ArrayList<>();
-        for (final Arena a : arenas.values()) {
-            if (!a.getName().startsWith(mode) || !a.canAutoJoin()) continue;
+        for (final Arena a : arenas) {
+            if (a == null || !a.getName().startsWith(fillter) || !a.canAutoJoin()) continue;
             if (goodArenas.isEmpty()) {
                 goodArenas.add(a);
                 continue;
