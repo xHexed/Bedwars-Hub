@@ -140,7 +140,7 @@ public class ArenaMenuHandler {
     static void handleArenaClick(final InventoryClickEvent event, final Iterable<Arena> arenas, final String arenaName) {
         final Player player = (Player) event.getWhoClicked();
         final Inventory inventory = event.getClickedInventory();
-        if (inventory != null && !(inventory.getHolder() instanceof SoloArenaMenu)) return;
+        if (inventory != null && !(inventory.getHolder() instanceof ArenaUpdateHandler)) return;
         event.setCancelled(true);
         final int slot = event.getSlot();
         if (slot == 49) {
