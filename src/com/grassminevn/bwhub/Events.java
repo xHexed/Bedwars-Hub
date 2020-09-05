@@ -73,8 +73,10 @@ public class Events implements Listener {
         final Inventory inventory = event.getView().getTopInventory();
         final InventoryHolder topInventory = inventory.getHolder();
         if (topInventory instanceof InventoryHandler) {
-            if (cooldown.contains(player.getUniqueId()))
+            if (cooldown.contains(player.getUniqueId())) {
+                event.setCancelled(true);
                 return;
+            }
             final InventoryHandler holder = ((InventoryHandler) topInventory);
             if (event.getInventory().equals(inventory))
                 holder.onClick(event);
