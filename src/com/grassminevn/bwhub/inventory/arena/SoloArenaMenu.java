@@ -11,8 +11,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.Arrays;
 
 public class SoloArenaMenu extends ArenaUpdateHandler implements InventoryHandler {
+    static final SoloArenaMenu INSTANCE = new SoloArenaMenu();
 
-    public SoloArenaMenu() {
+    private SoloArenaMenu() {
         super();
 
         /*
@@ -32,19 +33,19 @@ public class SoloArenaMenu extends ArenaUpdateHandler implements InventoryHandle
         inventory.setItem(49, auto);
 
         for (int i = 0; i < 45; i++) {
-            inventory.setItem(i, ArenaMenuHandler.getInventoryIcon("§fPhòng: Solo " + (i + 1), "bw_solo" + i, 8));
+            inventory.setItem(i, ArenaUpdateHandler.getInventoryIcon("§fPhòng: Solo " + (i + 1), "bw_solo" + i, 8));
         }
     }
 
     @Override
     public void onClick(final InventoryClickEvent event) {
-        ArenaMenuHandler.handleArenaClick(event, arenas.values(), "bw_solo");
+        ArenaUpdateHandler.handleArenaClick(event, arenas.values(), "bw_solo");
     }
 
     @Override
     public Inventory onArenaUpdate(final Arena arena) {
         arenas.put(arena.getArenaNumber(), arena);
-        inventory.setItem(arena.getArenaNumber() - 1, ArenaMenuHandler.getInventoryIcon("§fPhòng: Solo " + arena.getArenaNumber(), arena.getName(), arena.getMaxPlayers()));
+        inventory.setItem(arena.getArenaNumber() - 1, ArenaUpdateHandler.getInventoryIcon("§fPhòng: Solo " + arena.getArenaNumber(), arena.getName(), arena.getMaxPlayers()));
         return inventory;
     }
 }

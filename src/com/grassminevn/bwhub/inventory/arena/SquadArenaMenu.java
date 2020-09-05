@@ -11,8 +11,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.Arrays;
 
 public class SquadArenaMenu extends ArenaUpdateHandler implements InventoryHandler {
+    static final SquadArenaMenu INSTANCE = new SquadArenaMenu();
 
-    public SquadArenaMenu() {
+    private SquadArenaMenu() {
         super();
 
         /*
@@ -32,19 +33,19 @@ public class SquadArenaMenu extends ArenaUpdateHandler implements InventoryHandl
         inventory.setItem(49, auto);
 
         for (int i = 0; i < 45; i++) {
-            inventory.setItem(i, ArenaMenuHandler.getInventoryIcon("§fPhòng: Squad " + (i + 1), "bw_squad" + i, 16));
+            inventory.setItem(i, ArenaUpdateHandler.getInventoryIcon("§fPhòng: Squad " + (i + 1), "bw_squad" + i, 16));
         }
     }
 
     @Override
     public void onClick(final InventoryClickEvent event) {
-        ArenaMenuHandler.handleArenaClick(event, arenas.values(), "bw_squad");
+        ArenaUpdateHandler.handleArenaClick(event, arenas.values(), "bw_squad");
     }
 
     @Override
     public Inventory onArenaUpdate(final Arena arena) {
         arenas.put(arena.getArenaNumber(), arena);
-        inventory.setItem(arena.getArenaNumber() - 1, ArenaMenuHandler.getInventoryIcon("§fPhòng: Squad " + arena.getArenaNumber(), arena.getName(), arena.getMaxPlayers()));
+        inventory.setItem(arena.getArenaNumber() - 1, ArenaUpdateHandler.getInventoryIcon("§fPhòng: Squad " + arena.getArenaNumber(), arena.getName(), arena.getMaxPlayers()));
         return inventory;
     }
 }

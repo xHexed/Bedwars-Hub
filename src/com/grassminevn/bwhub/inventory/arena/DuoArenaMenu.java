@@ -11,8 +11,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.Arrays;
 
 public class DuoArenaMenu extends ArenaUpdateHandler implements InventoryHandler {
+    static final DuoArenaMenu INSTANCE = new DuoArenaMenu();
 
-    public DuoArenaMenu() {
+    private DuoArenaMenu() {
         super();
 
         /*
@@ -32,19 +33,19 @@ public class DuoArenaMenu extends ArenaUpdateHandler implements InventoryHandler
         inventory.setItem(49, auto);
 
         for (int i = 0; i < 45; i++) {
-            inventory.setItem(i, ArenaMenuHandler.getInventoryIcon("§fPhòng: Duo " + (i + 1), "bw_duo" + i, 16));
+            inventory.setItem(i, ArenaUpdateHandler.getInventoryIcon("§fPhòng: Duo " + (i + 1), "bw_duo" + i, 16));
         }
     }
 
     @Override
     public void onClick(final InventoryClickEvent event) {
-        ArenaMenuHandler.handleArenaClick(event, arenas.values(), "bw_duo");
+        ArenaUpdateHandler.handleArenaClick(event, arenas.values(), "bw_duo");
     }
 
     @Override
     public Inventory onArenaUpdate(final Arena arena) {
         arenas.put(arena.getArenaNumber(), arena);
-        inventory.setItem(arena.getArenaNumber() - 1, ArenaMenuHandler.getInventoryIcon("§fPhòng: Duo " + arena.getArenaNumber(), arena.getName(), arena.getMaxPlayers()));
+        inventory.setItem(arena.getArenaNumber() - 1, ArenaUpdateHandler.getInventoryIcon("§fPhòng: Duo " + arena.getArenaNumber(), arena.getName(), arena.getMaxPlayers()));
         return inventory;
     }
 }

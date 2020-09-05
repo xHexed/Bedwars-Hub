@@ -36,14 +36,11 @@
 package com.grassminevn.bwhub;
 
 import com.grassminevn.bwhub.inventory.InventoryHandler;
-import com.grassminevn.bwhub.inventory.arena.ArenaMenuHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -52,18 +49,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public class Events implements Listener {
+class Events implements Listener {
     private static final Set<UUID> cooldown = new HashSet<>();
-
-    @EventHandler(ignoreCancelled = true)
-    public void onInventoryOpenEvent(final InventoryOpenEvent event) {
-        ArenaMenuHandler.addViewer(event);
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    public void onInventoryCloseEvent(final InventoryCloseEvent event) {
-        ArenaMenuHandler.removeViewer(event);
-    }
 
     @EventHandler
     public void onInventoryClickEvent(final InventoryClickEvent event) {

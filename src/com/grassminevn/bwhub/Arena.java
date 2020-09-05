@@ -7,7 +7,7 @@
  */
 package com.grassminevn.bwhub;
 
-import com.grassminevn.bwhub.inventory.arena.ArenaMenuHandler;
+import com.grassminevn.bwhub.inventory.arena.ArenaUpdateHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,7 @@ public class Arena {
     private final ArenaType type;
     private final int arenaNumber;
 
-    public Arena(final String name, final String madeBy, final int maxPlayers) {
+    Arena(final String name, final String madeBy, final int maxPlayers) {
         this.name = name;
         this.madeBy = madeBy;
         this.maxPlayers = maxPlayers;
@@ -55,17 +55,17 @@ public class Arena {
 
     public void setPlayers(final int players) {
         this.players = players;
-        ArenaMenuHandler.updateView(this);
+        ArenaUpdateHandler.updateView(this);
     }
 
     public void setStatus(final ArenaStatus status) {
         this.status = status;
-        ArenaMenuHandler.updateView(this);
+        ArenaUpdateHandler.updateView(this);
     }
 
-    public void setMaxPlayers(final int maxPlayers) {
+    void setMaxPlayers(final int maxPlayers) {
         this.maxPlayers = maxPlayers;
-        ArenaMenuHandler.updateView(this);
+        ArenaUpdateHandler.updateView(this);
     }
 
     public String getName() {
@@ -111,7 +111,7 @@ public class Arena {
         return canAutoJoin() || status == ArenaStatus.Running;
     }
 
-    public boolean canAutoJoin() {
+    boolean canAutoJoin() {
         return status == ArenaStatus.Lobby && players < maxPlayers;
     }
 

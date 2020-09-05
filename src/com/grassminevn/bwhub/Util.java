@@ -16,7 +16,7 @@
  */
 package com.grassminevn.bwhub;
 
-import com.grassminevn.bwhub.inventory.arena.ArenaMenuHandler;
+import com.grassminevn.bwhub.inventory.arena.ArenaUpdateHandler;
 import com.grassminevn.levels.LevelsAPI;
 import me.MathiasMC.PvPLevels.PvPLevelsAPI;
 import org.bukkit.Bukkit;
@@ -34,7 +34,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Util {
     public static boolean config_beta;
     public static String config_subchannel = "lobby";
-    public static final Map<String, Arena> arenas = new ConcurrentHashMap<>();
+    static final Map<String, Arena> arenas = new ConcurrentHashMap<>();
 
     public static void checkMainDirs() {
         final File dir = BedwarsHub.plugin.getDataFolder();
@@ -43,13 +43,13 @@ public class Util {
         }
     }
 
-    public static boolean isInteger(final char number) {
+    static boolean isInteger(final char number) {
         return '0' <= number && number <= '9';
     }
 
     public static void removeArena(final String arena) {
         System.out.println("Trying to remove arena " + arena);
-        ArenaMenuHandler.updateView(arenas.remove(arena));
+        ArenaUpdateHandler.updateView(arenas.remove(arena));
     }
 
     public static Arena addArena(final String name,
@@ -72,7 +72,7 @@ public class Util {
         if (arenaStatus != null)
             arena.setStatus(Arena.ArenaStatus.valueOf(arenaStatus));
         arenas.put(name, arena);
-        ArenaMenuHandler.updateView(arena);
+        ArenaUpdateHandler.updateView(arena);
         return arena;
     }
 
@@ -83,7 +83,7 @@ public class Util {
         return arenas.get(name);
     }
 
-    public static void autoJoin(final Player player, final String mode) {
+    static void autoJoin(final Player player, final String mode) {
         autoJoin(player, arenas.values(), mode);
     }
 

@@ -174,7 +174,7 @@ public class ConfigManager {
         load(true);
     }
 
-    public void load(final boolean utf8) {
+    private void load(final boolean utf8) {
         BufferedReader br = null;
         try {
             br = !utf8 ? new BufferedReader(new InputStreamReader(new FileInputStream(configFile))) : new BufferedReader(new InputStreamReader(new FileInputStream(configFile), StandardCharsets.UTF_8));
@@ -264,14 +264,14 @@ public class ConfigManager {
         }
     }
 
-    public static class MultiKey {
+    static class MultiKey {
 
-        public static class MultiKeyEntry<K, V>
+        static class MultiKeyEntry<K, V>
         implements Map.Entry<K, V> {
             private final K o1;
             private V o2;
 
-            public MultiKeyEntry(final K key, final V value) {
+            MultiKeyEntry(final K key, final V value) {
                 o1 = key;
                 o2 = value;
             }

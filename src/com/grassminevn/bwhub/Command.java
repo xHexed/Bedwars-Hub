@@ -19,7 +19,7 @@ package com.grassminevn.bwhub;
 
 import com.grassminevn.bwhub.config.Config;
 import com.grassminevn.bwhub.config.LanguageConfig;
-import com.grassminevn.bwhub.inventory.arena.ArenaMenuHandler;
+import com.grassminevn.bwhub.inventory.arena.ArenaUpdateHandler;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -32,7 +32,7 @@ import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Command
+class Command
 implements CommandExecutor {
     private static final Pattern ARENA = Pattern.compile("\\{arena}");
 
@@ -112,13 +112,13 @@ implements CommandExecutor {
                 if (args.length >= 2) {
                     switch (args[1].toLowerCase()) {
                         case "solo":
-                            ((HumanEntity) sender).openInventory(ArenaMenuHandler.getSoloArenaMenu().getInventory());
+                            ((HumanEntity) sender).openInventory(ArenaUpdateHandler.getSoloArenaMenu().getInventory());
                             break;
                         case "duo":
-                            ((HumanEntity) sender).openInventory(ArenaMenuHandler.getDuoArenaMenu().getInventory());
+                            ((HumanEntity) sender).openInventory(ArenaUpdateHandler.getDuoArenaMenu().getInventory());
                             break;
                         case "squad":
-                            ((HumanEntity) sender).openInventory(ArenaMenuHandler.getSquadArenaMenu().getInventory());
+                            ((HumanEntity) sender).openInventory(ArenaUpdateHandler.getSquadArenaMenu().getInventory());
                             break;
                     }
                     return true;
