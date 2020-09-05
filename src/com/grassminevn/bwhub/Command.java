@@ -41,7 +41,7 @@ implements CommandExecutor {
         final Collection<String> cmds = new ArrayList<>();
         addIfHasPermission(cmds, sender, Permission.Command_List, "/" + label + " join <arena>");
         addIfHasPermission(cmds, sender, Permission.Command_List, "/" + label + " auto [solo/duo/squad]");
-        addIfHasPermission(cmds, sender, Permission.Command_List, "/" + label + " menu [solo/duo/squad]");
+        addIfHasPermission(cmds, sender, Permission.Command_List, "/" + label + " menu <solo/duo/squad>");
         addIfHasPermission(cmds, sender, Permission.Command_List, "/" + label + " list");
         addIfHasPermission(cmds, sender, Permission.Command_Info, "/" + label + " info <arena>");
         addIfHasPermission(cmds, sender, Permission.Reload, "/" + label + " reload");
@@ -133,6 +133,7 @@ implements CommandExecutor {
             case "info": {
                 if (args.length < 2) return false;
                 final Arena arena = Util.getArena(args[1].toLowerCase());
+                if (arena == null) return false;
                 sender.sendMessage(arena.getName() + ": " + arena.getStatus().name() + " " + arena.getPlayers() + "/" + arena.getMaxPlayers());
                 return true;
             }
