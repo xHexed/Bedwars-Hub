@@ -19,7 +19,7 @@
     <orderEntry type="module-library" scope="PROVIDED">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/me/MathiasMC/PvPLevels/1.4.1/PvPLevels-1.4.1.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/com/grassminevn/levels/1.4.1/levels-1.4.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -28,7 +28,7 @@
     <orderEntry type="module-library" scope="PROVIDED">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/com/grassminevn/levels/1.4.1/levels-1.4.1.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/me/MathiasMC/PvPLevels/2.0.6/PvPLevels-2.0.6.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

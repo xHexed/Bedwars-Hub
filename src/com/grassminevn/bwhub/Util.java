@@ -113,8 +113,8 @@ public class Util {
     public static void connect(final Player player, final Arena arena) {
         player.sendMessage(Language.JoinMessage_connecting.toString());
         Bukkit.getScheduler().runTaskAsynchronously(BedwarsHub.plugin, () -> {
-            PvPLevelsAPI.api.syncSave(player.getUniqueId().toString());
-            LevelsAPI.api.syncSave(player.getUniqueId().toString());
+            PvPLevelsAPI.syncSave(player.getUniqueId().toString());
+            LevelsAPI.syncSave(player.getUniqueId());
             final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
             final DataOutputStream out = new DataOutputStream(bytes);
             try {
