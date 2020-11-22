@@ -18,7 +18,7 @@ package com.grassminevn.bwhub;
 
 import com.grassminevn.bwhub.inventory.arena.ArenaUpdateHandler;
 import com.grassminevn.levels.LevelsAPI;
-import me.MathiasMC.PvPLevels.PvPLevelsAPI;
+import me.MathiasMC.PvPLevels.api.PvPLevelsAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
