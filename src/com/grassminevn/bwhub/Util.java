@@ -83,14 +83,14 @@ public class Util {
         return arenas.get(name);
     }
 
-    static void autoJoin(final Player player, final String mode) {
+    static void autoJoin(final Player player, final CharSequence mode) {
         autoJoin(player, arenas.values(), mode);
     }
 
-    public static void autoJoin(final Player player, final Iterable<Arena> arenas, final String fillter) {
+    public static void autoJoin(final Player player, final Iterable<Arena> arenas, final CharSequence fillter) {
         final ArrayList<Arena> goodArenas = new ArrayList<>();
         for (final Arena a : arenas) {
-            if (a == null || !a.getName().startsWith(fillter) || !a.canAutoJoin()) continue;
+            if (a == null || !a.getName().contains(fillter) || !a.canAutoJoin()) continue;
             if (goodArenas.isEmpty()) {
                 goodArenas.add(a);
                 continue;
