@@ -81,6 +81,12 @@ extends JavaPlugin {
     }
 
     public void onDisable() {
+        try {
+            socket.close();
+        }
+        catch (final IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static String getVersion() {
