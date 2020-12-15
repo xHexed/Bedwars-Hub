@@ -27,7 +27,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.time.LocalTime;
 
 public class BedwarsHub
@@ -53,13 +52,10 @@ extends JavaPlugin {
         new Thread("BedwarsSocketHandler") {
             @Override
             public void run() {
-                while (true) {
-                    try {
-                        final Socket client = socket.accept();
-                        final DataInputStream dis = new DataInputStream(client.getInputStream());
+                while (!socket.isClosed()) {
+                    try (final DataInputStream dis = new DataInputStream(socket.accept().getInputStream())) {
                         final String data = dis.readUTF();
                         Communication.onPacketReceived(data);
-                        dis.close();
                     }
                     catch (final Exception e) {
                         if (!e.toString().contains("CancelledPacketHandleException"))
