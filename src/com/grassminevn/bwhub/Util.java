@@ -115,16 +115,13 @@ public class Util {
         Bukkit.getScheduler().runTaskAsynchronously(BedwarsHub.plugin, () -> {
             PvPLevelsAPI.syncSave(player.getUniqueId().toString());
             LevelsAPI.syncSave(player.getUniqueId());
-            final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-            final DataOutputStream out = new DataOutputStream(bytes);
-            try {
+            try (final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                 final DataOutputStream out = new DataOutputStream(bytes)){
                 out.writeUTF("Connect");
                 out.writeUTF(arena.getName());
                 player.sendPluginMessage(BedwarsHub.plugin, "BungeeCord", bytes.toByteArray());
                 out.flush();
                 bytes.flush();
-                out.close();
-                bytes.close();
             }
             catch (final IOException e) {
                 e.printStackTrace();
