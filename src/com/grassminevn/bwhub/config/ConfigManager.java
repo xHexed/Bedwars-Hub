@@ -13,9 +13,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class ConfigManager {
-    private static final Random rand = new Random();
+    private static final Random rand = ThreadLocalRandom.current();
     private File configFile;
     private MultiKeyMap<String, Object> configs = new MultiKeyMap<>();
 
