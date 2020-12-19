@@ -15,25 +15,30 @@
  */
 package com.grassminevn.bwhub;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.grassminevn.bwhub.bungeecord.Communication;
 import com.grassminevn.bwhub.config.Config;
 import com.grassminevn.bwhub.config.LanguageConfig;
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.net.ServerSocket;
 import java.time.LocalTime;
 
 public class BedwarsHub
 extends JavaPlugin {
     public static Plugin plugin;
-    private static ServerSocket socket;
+    private ChannelFuture server;
 
+    @Override
     public void onEnable() {
         plugin = this;
         final CommandExecutor cmd = new Command();
@@ -43,28 +48,18 @@ extends JavaPlugin {
         LanguageConfig.load();
         Config.load();
 
-        try {
-            socket = new ServerSocket(2);
-        } catch (final IOException e) {
-            e.printStackTrace();
-        }
+        final ThreadFactoryBuilder threadFactory = new ThreadFactoryBuilder().setNameFormat("BedwarsHub Server IO #%d").setDaemon(true);
 
-        new Thread("BedwarsSocketHandler") {
-            @Override
-            public void run() {
-                while (!socket.isClosed()) {
-                    try (final DataInputStream dis = new DataInputStream(socket.accept().getInputStream())) {
-                        final String data = dis.readUTF();
-                        Communication.onPacketReceived(data);
+        server = new ServerBootstrap()
+                .group(new NioEventLoopGroup(1, threadFactory.build()), new NioEventLoopGroup(0, threadFactory.build()))
+                .channel(NioServerSocketChannel.class)
+                .childHandler(new ChannelInitializer<SocketChannel>() {
+                    @Override
+                    protected void initChannel(final SocketChannel channel) {
+                        channel.pipeline().addLast(new Communication());
                     }
-                    catch (final Exception e) {
-                        if (!e.toString().contains("CancelledPacketHandleException"))
-                            e.printStackTrace();
-                        run();
-                    }
-                }
-            }
-        }.start();
+                })
+                .bind(2).syncUninterruptibly();
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
             final World world = Bukkit.getWorld("world");
@@ -76,13 +71,9 @@ extends JavaPlugin {
         }, 0, 20);
     }
 
+    @Override
     public void onDisable() {
-        try {
-            socket.close();
-        }
-        catch (final IOException e) {
-            e.printStackTrace();
-        }
+        server.channel().close().syncUninterruptibly();
     }
 
     public static String getVersion() {
