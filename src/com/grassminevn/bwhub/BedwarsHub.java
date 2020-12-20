@@ -26,7 +26,6 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.CommandExecutor;
@@ -61,7 +60,7 @@ extends JavaPlugin {
                         channel.pipeline().addLast(new StringDecoder(), new Communication());
                     }
                 })
-                .bind(2).syncUninterruptibly();
+                .bind(2);
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
             final World world = Bukkit.getWorld("world");
