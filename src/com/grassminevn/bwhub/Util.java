@@ -48,7 +48,7 @@ public class Util {
     }
 
     public static void removeArena(final String arena) {
-        System.out.println("Trying to remove arena " + arena);
+        BedwarsHub.plugin.getLogger().info("Trying to remove arena " + arena);
         ArenaUpdateHandler.updateView(arenas.remove(arena));
     }
 
@@ -67,7 +67,7 @@ public class Util {
             }
             return arena;
         }
-        System.out.println("Added arena " + name + "(" + maxPlayers + ")");
+        BedwarsHub.plugin.getLogger().info("Added arena " + name + "(" + maxPlayers + ")");
         final Arena arena = new Arena(name, madeBy, Integer.parseInt(maxPlayers));
         if (arenaStatus != null)
             arena.setStatus(Arena.ArenaStatus.valueOf(arenaStatus));
