@@ -25,6 +25,8 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.string.StringEncoder;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.CommandExecutor;
@@ -56,7 +58,7 @@ extends JavaPlugin {
                 .childHandler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(final SocketChannel channel) {
-                        channel.pipeline().addLast(new Communication());
+                        channel.pipeline().addLast(new StringDecoder(), new Communication());
                     }
                 })
                 .bind(2).syncUninterruptibly();
